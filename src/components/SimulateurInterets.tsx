@@ -233,24 +233,47 @@ export default function SimulateurInterets() {
         </div>
 
         {/* ── Métriques ── */}
-        <div key={metricsKey} className="grid grid-cols-3 gap-4 animate-fade-up">
-          {[
-            { label: "Capital final", value: formatEur(capitalFinal), highlight: true },
-            { label: "Total versé", value: formatEur(totalVerse), highlight: false },
-            { label: "Intérêts générés", value: formatEur(totalInterets), highlight: false },
-          ].map(item => (
-            <div key={item.label}
-              className={`rounded-xl px-4 py-5 text-center ${item.highlight
-                ? "bg-[#059669]/10 border border-[#059669]/30"
-                : "bg-[#111827]"}`}>
-              <p className="text-[#6B7280] text-xs mb-1">{item.label}</p>
-              <p className={`text-xl sm:text-2xl font-bold tabular-nums leading-tight ${item.highlight ? "text-[#059669]" : "text-[#F9F9F9]"}`}
-                style={{ fontFamily: "var(--font-barlow-condensed)" }}>
-                {item.value}
-              </p>
+        {(() => {
+          const mise = scenA.capital + scenA.versement * scenA.duree * 12;
+          const fois = mise > 0 ? (capitalFinal / mise).toFixed(1) : "—";
+          const metrics = [
+            {
+              label: "Capital final",
+              value: formatEur(capitalFinal),
+              sub: `soit ${fois}× ta mise`,
+              highlight: true,
+            },
+            {
+              label: "Total versé",
+              value: formatEur(totalVerse),
+              sub: "ton effort d'épargne",
+              highlight: false,
+            },
+            {
+              label: "Intérêts générés",
+              value: formatEur(totalInterets),
+              sub: "argent gagné sans travailler",
+              highlight: false,
+            },
+          ];
+          return (
+            <div key={metricsKey} className="grid grid-cols-3 gap-4 animate-fade-up">
+              {metrics.map(item => (
+                <div key={item.label}
+                  className={`rounded-xl px-4 py-5 text-center ${item.highlight
+                    ? "bg-[#059669]/10 border border-[#059669]/30"
+                    : "bg-[#111827]"}`}>
+                  <p className="text-[#6B7280] text-xs mb-1">{item.label}</p>
+                  <p className={`text-xl sm:text-2xl font-bold tabular-nums leading-tight ${item.highlight ? "text-[#059669]" : "text-[#F9F9F9]"}`}
+                    style={{ fontFamily: "var(--font-barlow-condensed)" }}>
+                    {item.value}
+                  </p>
+                  <p className="text-[#4B5563] text-xs mt-1.5 leading-tight">{item.sub}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          );
+        })()}
 
         {/* ── Insights dynamiques ── */}
         {insights.length > 0 && (
@@ -307,7 +330,7 @@ export default function SimulateurInterets() {
           <p className="text-[#4B5563] text-xs">Clique ou glisse pour explorer</p>
         </div>
 
-        <ResponsiveContainer width="100%" height={320}>
+        <ResponsiveContainer width="100%" height={420}>
           <ComposedChart
             data={chartData}
             margin={{ top: 20, right: 8, left: 0, bottom: 0 }}
@@ -330,12 +353,12 @@ export default function SimulateurInterets() {
           >
             <defs>
               <linearGradient id="gVerse" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#4B5563" stopOpacity={0.7} />
-                <stop offset="95%" stopColor="#4B5563" stopOpacity={0.05} />
+                <stop offset="0%"  stopColor="#1F2937" stopOpacity={1} />
+                <stop offset="100%" stopColor="#1F2937" stopOpacity={0.6} />
               </linearGradient>
               <linearGradient id="gInterets" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%"  stopColor="#059669" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#059669" stopOpacity={0.1} />
+                <stop offset="0%"  stopColor="#059669" stopOpacity={0.9} />
+                <stop offset="100%" stopColor="#059669" stopOpacity={0.25} />
               </linearGradient>
             </defs>
 
@@ -360,9 +383,9 @@ export default function SimulateurInterets() {
                 strokeDasharray="5 3" />
             )}
 
-            <Area type="monotone" dataKey="verse" stackId="a" stroke="#4B5563" strokeWidth={1.5}
+            <Area type="monotone" dataKey="verse" stackId="a" stroke="#6B7280" strokeWidth={2}
               fill="url(#gVerse)" name="verse" />
-            <Area type="monotone" dataKey="interets" stackId="a" stroke="#059669" strokeWidth={2}
+            <Area type="monotone" dataKey="interets" stackId="a" stroke="#059669" strokeWidth={2.5}
               fill="url(#gInterets)" name="interets" />
 
             {showB && (
