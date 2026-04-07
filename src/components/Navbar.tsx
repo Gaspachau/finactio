@@ -6,7 +6,7 @@ import Link from "next/link";
 const NAV_LINKS = [
   { label: "Simulateurs", href: "/simulateurs" },
   { label: "Fiches actifs", href: "/#fiches" },
-  { label: "Glossaire", href: "/#glossaire" },
+  { label: "Glossaire", href: "/glossaire" },
 ];
 
 export default function Navbar() {
