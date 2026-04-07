@@ -1,5 +1,6 @@
 const actifs = [
   {
+    slug: "apple",
     ticker: "AAPL",
     name: "Apple Inc.",
     type: "Action",
@@ -16,6 +17,7 @@ const actifs = [
     ],
   },
   {
+    slug: "bitcoin",
     ticker: "BTC",
     name: "Bitcoin",
     type: "Cryptomonnaie",
@@ -32,6 +34,7 @@ const actifs = [
     ],
   },
   {
+    slug: "msci-world",
     ticker: "MSCI W",
     name: "MSCI World",
     type: "ETF",
@@ -48,6 +51,8 @@ const actifs = [
     ],
   },
 ];
+
+import Link from "next/link";
 
 export default function FichesActifs() {
   return (
@@ -115,12 +120,12 @@ export default function FichesActifs() {
                 ))}
               </div>
 
-              <a
-                href="#"
+              <Link
+                href={`/actifs/${actif.slug}`}
                 className="text-[#059669] text-sm font-semibold hover:underline"
               >
                 Voir la fiche complète →
-              </a>
+              </Link>
             </div>
           ))}
         </div>
