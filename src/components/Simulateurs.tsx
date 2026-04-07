@@ -39,7 +39,7 @@ export default function Simulateurs() {
         {simulateurs.map((sim) => (
           <div
             key={sim.title}
-            className="bg-[#1F2937] rounded-2xl p-8 flex flex-col gap-5 hover:ring-1 hover:ring-[#059669]/40 transition-all"
+            className="card-hover bg-[#1F2937] rounded-2xl p-8 flex flex-col gap-5"
           >
             <span className="text-4xl">{sim.icon}</span>
             <div>

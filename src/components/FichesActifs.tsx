@@ -72,7 +72,7 @@ export default function FichesActifs() {
           {actifs.map((actif) => (
             <div
               key={actif.ticker}
-              className="bg-[#1F2937] rounded-2xl p-6 flex flex-col gap-4 hover:ring-1 hover:ring-[#059669]/40 transition-all"
+              className="card-hover bg-[#1F2937] rounded-2xl p-6 flex flex-col gap-4"
             >
               {/* Header */}
               <div className="flex items-start justify-between">
