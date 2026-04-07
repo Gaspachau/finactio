@@ -293,3 +293,7 @@ export function getActifBySlug(slug: string): ActifData | undefined {
 export function getAllSlugs(): string[] {
   return ACTIFS.map((a) => a.slug);
 }
+
+export function getAllActifs(): ActifData[] {
+  return ACTIFS;
+}
