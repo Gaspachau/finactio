@@ -11,17 +11,11 @@ import {
   YAxis,
 } from "recharts";
 import type { ActifData } from "@/lib/actifs-data";
+import { useT } from "@/contexts/LanguageContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Tab = "histoire" | "chiffres" | "simulateur" | "quiz";
-
-const TABS: { id: Tab; label: string }[] = [
-  { id: "histoire", label: "Histoire" },
-  { id: "chiffres", label: "Chiffres" },
-  { id: "simulateur", label: "Simulateur" },
-  { id: "quiz", label: "Quiz" },
-];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -105,6 +99,8 @@ function SimulateurSlider({
 function SimulateurTab({ actif }: { actif: ActifData }) {
   const [montant, setMontant] = useState(1000);
   const [duree, setDuree] = useState(5);
+  const t = useT();
+  const tf = t.ficheActif;
 
   const chartData = useMemo(() =>
     Array.from({ length: duree + 1 }, (_, i) => ({
@@ -126,26 +122,26 @@ function SimulateurTab({ actif }: { actif: ActifData }) {
       </div>
 
       <div className="space-y-6">
-        <SimulateurSlider label="Montant investi" value={montant} min={100} max={10000} step={100}
+        <SimulateurSlider label={tf.simuMontant} value={montant} min={100} max={10000} step={100}
           display={montant.toLocaleString("fr-FR") + " €"} onChange={setMontant} />
-        <SimulateurSlider label="Durée de placement" value={duree} min={1} max={15} step={1}
-          display={duree + " ans"} onChange={setDuree} />
+        <SimulateurSlider label={tf.simuDuree} value={duree} min={1} max={15} step={1}
+          display={duree + " " + tf.simuAns} onChange={setDuree} />
       </div>
 
       {/* Résultats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-[#059669]/10 border border-[#059669]/30 rounded-xl p-4 text-center">
-          <p className="text-[#6B7280] text-xs mb-1">Capital final</p>
+          <p className="text-[#6B7280] text-xs mb-1">{tf.simuCapitalFinal}</p>
           <p className="text-[#059669] text-xl font-bold"
             style={{ fontFamily: "var(--font-barlow-condensed)" }}>{formatEur(capitalFinal)}</p>
         </div>
         <div className="bg-[#111827] rounded-xl p-4 text-center">
-          <p className="text-[#6B7280] text-xs mb-1">Gain</p>
+          <p className="text-[#6B7280] text-xs mb-1">{tf.simuGain}</p>
           <p className="text-[#F9F9F9] text-xl font-bold"
             style={{ fontFamily: "var(--font-barlow-condensed)" }}>+{formatEur(gain)}</p>
         </div>
         <div className="bg-[#111827] rounded-xl p-4 text-center">
-          <p className="text-[#6B7280] text-xs mb-1">Multiplicateur</p>
+          <p className="text-[#6B7280] text-xs mb-1">{tf.simuMultiplicateur}</p>
           <p className="text-[#F9F9F9] text-xl font-bold"
             style={{ fontFamily: "var(--font-barlow-condensed)" }}>{multiplicateur}×</p>
         </div>
@@ -154,7 +150,7 @@ function SimulateurTab({ actif }: { actif: ActifData }) {
       {/* Graphique */}
       <div>
         <p className="text-[#6B7280] text-xs uppercase tracking-widest font-semibold mb-3">
-          Projection sur {duree} an{duree > 1 ? "s" : ""}
+          {tf.simuProjection} {duree} {tf.simuAns}
         </p>
         <ResponsiveContainer width="100%" height={220}>
           <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
@@ -183,7 +179,7 @@ function SimulateurTab({ actif }: { actif: ActifData }) {
       </div>
 
       <p className="text-[#4B5563] text-xs text-center">
-        Projection indicative basée sur les performances historiques. Les performances passées ne préjugent pas des performances futures.
+        {tf.simuDisclaimer}
       </p>
     </div>
   );
@@ -197,6 +193,8 @@ function QuizTab({ actif }: { actif: ActifData }) {
     Array(actif.quiz.length).fill(null)
   );
   const [done, setDone] = useState(false);
+  const t = useT();
+  const tf = t.ficheActif;
 
   const q = actif.quiz[current];
   const chosen = answers[current];
@@ -217,13 +215,7 @@ function QuizTab({ actif }: { actif: ActifData }) {
   };
 
   const score = answers.filter((a, i) => a === actif.quiz[i]?.answer).length;
-
-  const scoreMsg = [
-    "Pas grave, c'est pour ça que Finactio existe ! Relis la fiche et retente.",
-    "Bonne base ! Tu as saisi l'essentiel — un peu plus de lecture et tu maîtrises.",
-    "Bien joué ! Tu connais les fondamentaux de cet actif.",
-    "Parfait ! Tu maîtrises cet actif mieux que beaucoup d'investisseurs.",
-  ][score];
+  const scoreMsg = tf.quizScores[score] ?? tf.quizScores[tf.quizScores.length - 1];
 
   const resetQuiz = () => {
     setCurrent(0);
@@ -246,7 +238,7 @@ function QuizTab({ actif }: { actif: ActifData }) {
         </div>
         <button onClick={resetQuiz}
           className="bg-[#1F2937] hover:bg-[#374151] text-[#F9F9F9] font-semibold px-6 py-3 rounded-lg text-sm transition-colors">
-          Recommencer le quiz
+          {tf.quizRestart}
         </button>
       </div>
     );
@@ -292,7 +284,7 @@ function QuizTab({ actif }: { actif: ActifData }) {
         <div className={`rounded-xl px-4 py-3 text-sm border ${chosen === q.answer
           ? "bg-[#059669]/10 border-[#059669]/30 text-[#059669]"
           : "bg-red-500/10 border-red-500/30 text-red-400"}`}>
-          <span className="font-semibold">{chosen === q.answer ? "✓ Exact ! " : "✗ Pas tout à fait. "}</span>
+          <span className="font-semibold">{chosen === q.answer ? tf.quizCorrect : tf.quizWrong}</span>
           {q.explication}
         </div>
       )}
@@ -304,6 +296,15 @@ function QuizTab({ actif }: { actif: ActifData }) {
 
 export default function FicheActif({ actif }: { actif: ActifData }) {
   const [activeTab, setActiveTab] = useState<Tab>("histoire");
+  const t = useT();
+  const tf = t.ficheActif;
+
+  const TABS: { id: Tab; label: string }[] = [
+    { id: "histoire", label: tf.tabs.histoire },
+    { id: "chiffres", label: tf.tabs.chiffres },
+    { id: "simulateur", label: tf.tabs.simulateur },
+    { id: "quiz", label: tf.tabs.quiz },
+  ];
 
   return (
     <>

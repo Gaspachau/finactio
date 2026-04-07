@@ -1,4 +1,10 @@
+"use client";
+
+import { useT } from "@/contexts/LanguageContext";
+
 export default function Footer() {
+  const t = useT();
+
   return (
     <footer className="border-t border-[#1F2937] py-10 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -12,18 +18,16 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex flex-wrap justify-center gap-6 text-sm text-[#6B7280]">
-          {["Simulateurs", "Fiches actifs", "Glossaire", "À propos", "CGU", "Confidentialité"].map(
-            (link) => (
-              <a key={link} href="#" className="hover:text-[#F9F9F9] transition-colors">
-                {link}
-              </a>
-            )
-          )}
+          {t.footer.links.map((link) => (
+            <a key={link} href="#" className="hover:text-[#F9F9F9] transition-colors">
+              {link}
+            </a>
+          ))}
         </div>
 
         {/* Copyright */}
         <p className="text-[#6B7280] text-sm">
-          © {new Date().getFullYear()} Finactio. Tous droits réservés.
+          © {new Date().getFullYear()} Finactio. {t.footer.copyright}
         </p>
       </div>
     </footer>

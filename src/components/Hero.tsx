@@ -1,4 +1,10 @@
+"use client";
+
+import { useT } from "@/contexts/LanguageContext";
+
 export default function Hero() {
+  const t = useT();
+
   return (
     <section className="relative overflow-hidden pt-32 pb-24 px-4 sm:px-6 text-center">
       {/* Dot grid texture */}
@@ -17,7 +23,7 @@ export default function Hero() {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-[#1F2937] text-[#059669] text-xs font-semibold px-4 py-1.5 rounded-full mb-10 tracking-widest uppercase border border-[#059669]/20">
           <span className="w-1.5 h-1.5 bg-[#059669] rounded-full inline-block animate-pulse" />
-          Plateforme éducative finance personnelle
+          {t.hero.badge}
         </div>
 
         {/* Title */}
@@ -25,16 +31,15 @@ export default function Hero() {
           className="text-[4rem] sm:text-[5.5rem] md:text-[7rem] lg:text-[9rem] font-bold uppercase leading-none tracking-tight mb-8"
           style={{ fontFamily: "var(--font-barlow-condensed)" }}
         >
-          <span className="text-[#F9F9F9] block">COMPRENDS</span>
+          <span className="text-[#F9F9F9] block">{t.hero.titleLine1}</span>
           <span className="text-[#059669] animate-underline inline-block">
-            TON ARGENT.
+            {t.hero.titleLine2}
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-[#6B7280] text-lg sm:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
-          Simulateurs interactifs, fiches actifs et leçons de 8 minutes pour
-          apprendre à investir intelligemment — sans jargon, sans prise de tête.
+          {t.hero.subtitle}
         </p>
 
         {/* Buttons */}
@@ -43,13 +48,13 @@ export default function Hero() {
             href="#cta"
             className="btn-emerald bg-[#059669] hover:bg-[#047857] text-white font-semibold px-9 py-4 rounded-lg text-base w-full sm:w-auto"
           >
-            Commencer gratuitement
+            {t.hero.ctaPrimary}
           </a>
           <a
             href="#simulateurs"
             className="border border-[#374151] hover:border-[#6B7280] text-[#F9F9F9] font-semibold px-9 py-4 rounded-lg text-base transition-colors w-full sm:w-auto"
           >
-            Voir les simulateurs
+            {t.hero.ctaSecondary}
           </a>
         </div>
       </div>

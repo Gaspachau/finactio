@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useT } from "@/contexts/LanguageContext";
 import {
   Area,
   CartesianGrid,
@@ -55,24 +56,22 @@ function formatYAxisKeur(v: number): string {
   return v + "€";
 }
 
+import type { Translation } from "@/lib/i18n";
+
 function computeInsights(
   s: Scenario,
   capitalFinal: number,
-  totalInterets: number
+  totalInterets: number,
+  tSim: Translation["simu"]
 ): string[] {
   const ins: string[] = [];
   if (s.taux > 0) {
     const d = Math.round(72 / s.taux);
-    ins.push(
-      `À ${s.taux.toFixed(1).replace(".", ",")} % annuel, ton capital double environ tous les ${d} ans.`
-    );
+    ins.push(tSim.insightDoubling(s.taux.toFixed(1).replace(".", ","), d));
   }
   if (capitalFinal > 0 && totalInterets > 0) {
     const pct = Math.round((totalInterets / capitalFinal) * 100);
-    if (pct >= 15)
-      ins.push(
-        `Les intérêts représentent ${pct} % du capital final — c'est la magie des intérêts composés.`
-      );
+    if (pct >= 15) ins.push(tSim.insightPct(pct));
   }
   if (s.versement <= 1900 && s.taux > 0) {
     const extra = computeData({ ...s, versement: s.versement + 100 });
@@ -80,15 +79,9 @@ function computeInsights(
       extra[extra.length - 1].verse +
       extra[extra.length - 1].interets -
       capitalFinal;
-    if (gain > 200)
-      ins.push(
-        `+100 €/mois supplémentaires te rapporteraient ${formatEur(gain)} de plus à terme.`
-      );
+    if (gain > 200) ins.push(tSim.insightExtra(formatEur(gain)));
   }
-  if (ins.length === 0 && s.taux === 0)
-    ins.push(
-      "Sans rendement, tu n'accumules que ce que tu verses. Augmente le taux pour voir la magie opérer."
-    );
+  if (ins.length === 0 && s.taux === 0) ins.push(tSim.insightNoReturn);
   return ins.slice(0, 3);
 }
 
@@ -115,11 +108,13 @@ function ButtonSelect({
   value,
   presets,
   onChange,
+  placeholder = "Autre montant…",
 }: {
   label: string;
   value: number;
   presets: number[];
   onChange: (v: number) => void;
+  placeholder?: string;
 }) {
   const [rawInput, setRawInput] = useState("");
 
@@ -169,7 +164,7 @@ function ButtonSelect({
         <input
           type="text"
           inputMode="numeric"
-          placeholder="Autre montant…"
+          placeholder={placeholder}
           value={rawInput}
           onChange={handleInput}
           className="w-full bg-[#111827] border border-[#374151] text-[#F9F9F9] placeholder-[#4B5563] rounded-xl px-4 py-2.5 pr-8 text-sm focus:outline-none focus:border-[#059669] transition-colors"
@@ -250,11 +245,13 @@ function CustomTooltip({
   payload,
   label,
   showB,
+  tSim,
 }: {
   active?: boolean;
   payload?: { value: number; name: string }[];
   label?: number;
   showB?: boolean;
+  tSim: Translation["simu"];
 }) {
   if (!active || !payload?.length) return null;
   const verse = payload.find((p) => p.name === "verse")?.value ?? 0;
@@ -264,7 +261,7 @@ function CustomTooltip({
   return (
     <div className="bg-[#111827] border border-[#059669]/40 rounded-xl px-5 py-4 text-sm shadow-2xl shadow-[#059669]/10 min-w-[200px]">
       <p className="text-[#059669] text-xs font-bold uppercase tracking-widest mb-3">
-        Année {label}
+        {tSim.annee} {label}
       </p>
       <p
         className="text-[#F9F9F9] text-2xl font-bold mb-3"
@@ -276,7 +273,7 @@ function CustomTooltip({
         <div className="flex items-center justify-between gap-8">
           <span className="flex items-center gap-2 text-xs text-[#6B7280]">
             <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "#1E3A5F", border: "1px solid #2D5A8E" }} />
-            Capital versé
+            {tSim.capitalVerse}
           </span>
           <span className="text-[#9CA3AF] text-xs font-medium tabular-nums">
             {formatEur(verse)}
@@ -285,7 +282,7 @@ function CustomTooltip({
         <div className="flex items-center justify-between gap-8">
           <span className="flex items-center gap-2 text-xs text-[#6B7280]">
             <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "#059669", border: "1px solid #00C896" }} />
-            Intérêts générés
+            {tSim.interetsGeneres}
           </span>
           <span className="text-[#00C896] text-xs font-semibold tabular-nums">
             {formatEur(interets)}
@@ -293,7 +290,7 @@ function CustomTooltip({
         </div>
         {showB && totalB !== undefined && (
           <div className="flex items-center justify-between gap-8 pt-1.5 mt-1.5 border-t border-[#1F2937]">
-            <span className="text-xs text-[#F59E0B]">Scénario B</span>
+            <span className="text-xs text-[#F59E0B]">{tSim.scenarioB}</span>
             <span className="text-[#F59E0B] text-xs font-semibold tabular-nums">
               {formatEur(totalB)}
             </span>
@@ -345,6 +342,9 @@ const DEFAULT_A: Scenario = { capital: 10_000, versement: 200, taux: 7, duree: 2
 const DEFAULT_B: Scenario = { capital: 5_000, versement: 300, taux: 8, duree: 20 };
 
 export default function SimulateurInterets() {
+  const t = useT();
+  const tSim = t.simu;
+
   const [scenA, setScenar] = useState<Scenario>(DEFAULT_A);
   const setA = (k: keyof Scenario) => (v: number) =>
     setScenar((p) => ({ ...p, [k]: v }));
@@ -368,8 +368,9 @@ export default function SimulateurInterets() {
   const multiplicateur = mise > 0 ? capitalFinal / mise : 1;
 
   const insights = useMemo(
-    () => computeInsights(scenA, capitalFinal, totalInterets),
-    [scenA, capitalFinal, totalInterets]
+    () => computeInsights(scenA, capitalFinal, totalInterets, tSim),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [scenA, capitalFinal, totalInterets, tSim]
   );
 
   const milestones = useMemo(
@@ -416,23 +417,25 @@ export default function SimulateurInterets() {
         {/* Capital + Versement (boutons) */}
         <div className="space-y-6">
           <ButtonSelect
-            label="Capital initial"
+            label={tSim.capitalInitial}
             value={scenA.capital}
             presets={CAPITAL_PRESETS}
             onChange={setA("capital")}
+            placeholder={tSim.autreAmout}
           />
           <ButtonSelect
-            label="Versement mensuel"
+            label={tSim.versementMensuel}
             value={scenA.versement}
             presets={VERSEMENT_PRESETS}
             onChange={setA("versement")}
+            placeholder={tSim.autreAmout}
           />
         </div>
 
         {/* Taux + Durée (sliders) */}
         <div className="grid sm:grid-cols-2 gap-6">
           <Slider
-            label="Taux annuel"
+            label={tSim.tauxAnnuel}
             value={scenA.taux}
             min={0}
             max={15}
@@ -441,12 +444,12 @@ export default function SimulateurInterets() {
             onChange={setA("taux")}
           />
           <Slider
-            label="Durée"
+            label={tSim.duree}
             value={scenA.duree}
             min={1}
             max={40}
             step={1}
-            display={scenA.duree + " ans"}
+            display={scenA.duree + " " + tSim.ans}
             onChange={setA("duree")}
           />
         </div>
@@ -459,7 +462,7 @@ export default function SimulateurInterets() {
           {/* Capital final */}
           <div className="col-span-2 sm:col-span-1 bg-[#059669]/10 border border-[#059669]/30 rounded-2xl px-5 py-6 text-center">
             <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
-              Capital final
+              {tSim.capitalFinal}
             </p>
             <p
               className="text-3xl sm:text-4xl font-bold text-[#059669] tabular-nums leading-none mb-1"
@@ -468,14 +471,14 @@ export default function SimulateurInterets() {
               {formatEur(capitalFinal)}
             </p>
             <p className="text-[#059669]/60 text-xs">
-              +{formatEur(totalInterets)} de gains
+              {tSim.gainsSubtitle(formatEur(totalInterets))}
             </p>
           </div>
 
           {/* Total versé */}
           <div className="bg-[#111827] rounded-2xl px-5 py-6 text-center">
             <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
-              Total versé
+              {tSim.totalVerse}
             </p>
             <p
               className="text-2xl sm:text-3xl font-bold text-[#F9F9F9] tabular-nums leading-none mb-1"
@@ -483,13 +486,13 @@ export default function SimulateurInterets() {
             >
               {formatEur(totalVerse)}
             </p>
-            <p className="text-[#4B5563] text-xs">ton effort d&apos;épargne</p>
+            <p className="text-[#4B5563] text-xs">{tSim.effortSubtitle}</p>
           </div>
 
           {/* Intérêts */}
           <div className="bg-[#111827] rounded-2xl px-5 py-6 text-center">
             <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
-              Intérêts générés
+              {tSim.interetsGeneres}
             </p>
             <p
               className="text-2xl sm:text-3xl font-bold text-[#F9F9F9] tabular-nums leading-none mb-1"
@@ -497,13 +500,13 @@ export default function SimulateurInterets() {
             >
               {formatEur(totalInterets)}
             </p>
-            <p className="text-[#4B5563] text-xs">gagné sans travailler</p>
+            <p className="text-[#4B5563] text-xs">{tSim.sansTravailler}</p>
           </div>
 
           {/* Multiplicateur */}
           <div className="bg-[#111827] rounded-2xl px-5 py-6 text-center">
             <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
-              Multiplicateur
+              {tSim.multiplicateur}
             </p>
             <p
               className="text-2xl sm:text-3xl font-bold text-[#F9F9F9] tabular-nums leading-none mb-1"
@@ -511,7 +514,7 @@ export default function SimulateurInterets() {
             >
               ×{multiplicateur.toFixed(1)}
             </p>
-            <p className="text-[#4B5563] text-xs">ta mise multipliée</p>
+            <p className="text-[#4B5563] text-xs">{tSim.miseMultipliee}</p>
           </div>
         </div>
 
@@ -536,10 +539,10 @@ export default function SimulateurInterets() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-[#F9F9F9] font-semibold text-sm">
-              Comparer un scénario
+              {tSim.comparerScenario}
             </p>
             <p className="text-[#6B7280] text-xs">
-              Superpose une 2e configuration sur le même graphique
+              {tSim.comparerSubtitle}
             </p>
           </div>
           <button
@@ -550,14 +553,14 @@ export default function SimulateurInterets() {
                 : "border-[#374151] text-[#6B7280] hover:border-[#6B7280] hover:text-[#F9F9F9]"
             }`}
           >
-            {showB ? "✕ Masquer le scénario B" : "+ Ajouter un scénario"}
+            {showB ? tSim.masquerScenarioB : tSim.ajouterScenario}
           </button>
         </div>
 
         {showB && (
           <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-[#374151]">
             <Slider
-              label="Capital initial B"
+              label={tSim.capitalInitialB}
               value={scenB.capital}
               min={0}
               max={50000}
@@ -567,7 +570,7 @@ export default function SimulateurInterets() {
               accent="#F59E0B"
             />
             <Slider
-              label="Versement mensuel B"
+              label={tSim.versementMensuelB}
               value={scenB.versement}
               min={0}
               max={2000}
@@ -577,7 +580,7 @@ export default function SimulateurInterets() {
               accent="#F59E0B"
             />
             <Slider
-              label="Taux annuel B"
+              label={tSim.tauxAnnuelB}
               value={scenB.taux}
               min={0}
               max={15}
@@ -587,12 +590,12 @@ export default function SimulateurInterets() {
               accent="#F59E0B"
             />
             <Slider
-              label="Durée B"
+              label={tSim.dureeB}
               value={scenB.duree}
               min={1}
               max={40}
               step={1}
-              display={scenB.duree + " ans"}
+              display={scenB.duree + " " + tSim.ans}
               onChange={setB("duree")}
               accent="#F59E0B"
             />
@@ -607,10 +610,10 @@ export default function SimulateurInterets() {
             className="text-[#F9F9F9] font-bold uppercase text-lg"
             style={{ fontFamily: "var(--font-barlow-condensed)" }}
           >
-            Évolution sur {scenA.duree} ans
+            {tSim.evolutionSur} {scenA.duree} {tSim.ans}
           </p>
           <p className="text-[#4B5563] text-xs hidden sm:block">
-            Clique ou glisse pour explorer
+            {tSim.cliquePourExplorer}
           </p>
         </div>
 
@@ -671,7 +674,7 @@ export default function SimulateurInterets() {
             />
 
             <Tooltip
-              content={<CustomTooltip showB={showB} />}
+              content={<CustomTooltip showB={showB} tSim={tSim} />}
               cursor={{ stroke: "#374151", strokeWidth: 1, strokeDasharray: "4 4" }}
             />
 
@@ -742,14 +745,14 @@ export default function SimulateurInterets() {
               className="w-3 h-3 rounded-sm"
               style={{ background: "#1E3A5F", border: "1px solid #2D5A8E" }}
             />
-            <span className="text-[#6B7280] text-xs">Capital versé</span>
+            <span className="text-[#6B7280] text-xs">{tSim.capitalVerse}</span>
           </div>
           <div className="flex items-center gap-2">
             <span
               className="w-3 h-3 rounded-sm"
               style={{ background: "#059669", border: "1px solid #00C896" }}
             />
-            <span className="text-[#6B7280] text-xs">Intérêts générés</span>
+            <span className="text-[#6B7280] text-xs">{tSim.interetsGeneres}</span>
           </div>
           {showB && (
             <div className="flex items-center gap-2">
@@ -757,7 +760,7 @@ export default function SimulateurInterets() {
                 className="w-6 h-0"
                 style={{ borderTop: "2px dashed #F59E0B", display: "block", width: 24 }}
               />
-              <span className="text-[#6B7280] text-xs">Scénario B</span>
+              <span className="text-[#6B7280] text-xs">{tSim.scenarioB}</span>
             </div>
           )}
         </div>
@@ -767,20 +770,20 @@ export default function SimulateurInterets() {
           <div className="mt-5 bg-[#111827] rounded-xl border border-[#059669]/30 p-4">
             <div className="flex items-center justify-between mb-3">
               <p className="text-[#059669] font-semibold text-sm">
-                📍 Année {pinnedYear}
+                📍 {tSim.annee} {pinnedYear}
               </p>
               <button
                 onClick={() => setPinnedYear(null)}
                 className="text-[#4B5563] hover:text-[#F9F9F9] text-xs transition-colors"
               >
-                ✕ Fermer
+                {tSim.fermer}
               </button>
             </div>
             <div
               className={`grid gap-4 text-center ${showB && pinnedDataB ? "grid-cols-4" : "grid-cols-3"}`}
             >
               <div>
-                <p className="text-[#6B7280] text-xs mb-1">Capital versé</p>
+                <p className="text-[#6B7280] text-xs mb-1">{tSim.capitalVerse}</p>
                 <p
                   className="text-[#F9F9F9] font-bold"
                   style={{ fontFamily: "var(--font-barlow-condensed)" }}
@@ -789,7 +792,7 @@ export default function SimulateurInterets() {
                 </p>
               </div>
               <div>
-                <p className="text-[#6B7280] text-xs mb-1">Intérêts</p>
+                <p className="text-[#6B7280] text-xs mb-1">{tSim.interets}</p>
                 <p
                   className="text-[#00C896] font-bold"
                   style={{ fontFamily: "var(--font-barlow-condensed)" }}
@@ -798,7 +801,7 @@ export default function SimulateurInterets() {
                 </p>
               </div>
               <div>
-                <p className="text-[#6B7280] text-xs mb-1">Total</p>
+                <p className="text-[#6B7280] text-xs mb-1">{tSim.total}</p>
                 <p
                   className="text-[#F9F9F9] text-lg font-bold"
                   style={{ fontFamily: "var(--font-barlow-condensed)" }}
@@ -808,7 +811,7 @@ export default function SimulateurInterets() {
               </div>
               {showB && pinnedDataB && (
                 <div>
-                  <p className="text-[#6B7280] text-xs mb-1">Total B</p>
+                  <p className="text-[#6B7280] text-xs mb-1">{tSim.totalB}</p>
                   <p
                     className="text-[#F59E0B] text-lg font-bold"
                     style={{ fontFamily: "var(--font-barlow-condensed)" }}

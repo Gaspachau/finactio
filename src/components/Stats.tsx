@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-const stats = [
-  { target: 42000, decimals: 0, thousands: true, suffix: "", label: "Apprenants actifs" },
-  { target: 120, decimals: 0, thousands: false, suffix: "+", label: "Leçons disponibles" },
-  { target: 4.9, decimals: 1, thousands: false, suffix: "★", label: "Note moyenne" },
-  { target: 8, decimals: 0, thousands: false, suffix: " min", label: "Par leçon en moyenne" },
-];
+import { useT } from "@/contexts/LanguageContext";
 
 function formatValue(n: number, decimals: number, thousands: boolean): string {
   if (thousands) return n.toLocaleString("fr-FR");
@@ -39,7 +33,6 @@ function CountUp({
 
     const timer = setInterval(() => {
       step++;
-      // Ease-out: fast at start, slow at end
       const progress = 1 - Math.pow(1 - step / steps, 3);
       const current = target * progress;
       setCount(current);
@@ -64,6 +57,14 @@ function CountUp({
 export default function Stats() {
   const ref = useRef<HTMLElement>(null);
   const [started, setStarted] = useState(false);
+  const t = useT();
+
+  const stats = [
+    { target: 42000, decimals: 0, thousands: true, suffix: "", label: t.stats.apprenants },
+    { target: 120, decimals: 0, thousands: false, suffix: "+", label: t.stats.lecons },
+    { target: 4.9, decimals: 1, thousands: false, suffix: "★", label: t.stats.note },
+    { target: 8, decimals: 0, thousands: false, suffix: " min", label: t.stats.duree },
+  ];
 
   useEffect(() => {
     const el = ref.current;

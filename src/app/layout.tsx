@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -28,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${barlow.variable} ${barlowCondensed.variable}`}>
       <body className="bg-[#111827] text-[#F9F9F9] antialiased" style={{ fontFamily: "var(--font-barlow), sans-serif" }}>
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

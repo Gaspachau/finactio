@@ -1,4 +1,9 @@
-const actifs = [
+"use client";
+
+import Link from "next/link";
+import { useT } from "@/contexts/LanguageContext";
+
+const ACTIFS_STATIC = [
   {
     slug: "apple",
     ticker: "AAPL",
@@ -8,8 +13,6 @@ const actifs = [
     price: "182,52 $",
     change: "+1,34%",
     positive: true,
-    description:
-      "Géant technologique américain. Produits phares : iPhone, Mac, services. Capitalisation >2 800 Mds $.",
     metrics: [
       { label: "P/E ratio", value: "28,4x" },
       { label: "Dividende", value: "0,92 %" },
@@ -25,8 +28,6 @@ const actifs = [
     price: "67 240 $",
     change: "+3,21%",
     positive: true,
-    description:
-      "Première cryptomonnaie mondiale. Offre limitée à 21 millions d'unités. Réserve de valeur numérique.",
     metrics: [
       { label: "Cap. marché", value: "1 320 Mds $" },
       { label: "Dominance", value: "52,3 %" },
@@ -42,8 +43,6 @@ const actifs = [
     price: "420,18 €",
     change: "+0,87%",
     positive: true,
-    description:
-      "Indice mondial couvrant 23 pays développés, ~1 500 entreprises. Standard de la diversification passive.",
     metrics: [
       { label: "Frais (TER)", value: "0,12 %" },
       { label: "Perf. 10 ans", value: "+178 %" },
@@ -52,29 +51,29 @@ const actifs = [
   },
 ];
 
-import Link from "next/link";
-
 export default function FichesActifs() {
+  const t = useT();
+
   return (
     <section id="fiches" className="py-20 px-4 sm:px-6 bg-[#1F2937]/30">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12">
           <p className="text-[#059669] text-sm font-semibold uppercase tracking-widest mb-2">
-            Fiches actifs
+            {t.fichesActifsSection.label}
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold uppercase text-[#F9F9F9] leading-tight"
             style={{ fontFamily: "var(--font-barlow-condensed)" }}
           >
-            COMPRENDS CE DANS QUOI
+            {t.fichesActifsSection.heading1}
             <br />
-            <span className="text-[#059669]">TU INVESTIS.</span>
+            <span className="text-[#059669]">{t.fichesActifsSection.heading2}</span>
           </h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {actifs.map((actif) => (
+          {ACTIFS_STATIC.map((actif, idx) => (
             <div
               key={actif.ticker}
               className="card-hover bg-[#1F2937] rounded-2xl p-6 flex flex-col gap-4"
@@ -107,7 +106,7 @@ export default function FichesActifs() {
 
               {/* Description */}
               <p className="text-[#6B7280] text-sm leading-relaxed">
-                {actif.description}
+                {t.fichesActifsSection.actifs[idx]?.description ?? ""}
               </p>
 
               {/* Metrics */}
@@ -124,7 +123,7 @@ export default function FichesActifs() {
                 href={`/actifs/${actif.slug}`}
                 className="text-[#059669] text-sm font-semibold hover:underline"
               >
-                Voir la fiche complète →
+                {t.fichesActifsSection.cta}
               </Link>
             </div>
           ))}
