@@ -4,11 +4,11 @@ import { createClient } from "@supabase/supabase-js";
 import YahooFinance from "yahoo-finance2";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import StockDetailClient, { type StockDetail } from "./StockDetailClient";
+import StockDetailClient, { type StockDetail, type ChartPoint } from "./StockDetailClient";
 import type { IndiceData, StockRow } from "@/app/marches/MarchesClient";
 import { STATIC_INDICES } from "@/lib/marches-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 // ─── Métadonnées ──────────────────────────────────────────────────────────────
 
@@ -87,9 +87,11 @@ interface LiveData {
   longName?: string;
 }
 
+// Instance partagée (supprime les deux notices)
+const yf = new YahooFinance({ suppressNotices: ["yahooSurvey", "ripHistorical"] });
+
 async function getLiveData(symbol: string): Promise<LiveData | null> {
   try {
-    const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
     const q = await (yf.quote as (s: string, o: object, m: object) => Promise<Record<string, unknown>>)(
       symbol, {}, { validateResult: false }
     );
@@ -138,6 +140,35 @@ async function getLiveData(symbol: string): Promise<LiveData | null> {
   }
 }
 
+// ─── Données historiques Yahoo Finance ───────────────────────────────────────
+
+async function getHistoricalData(symbol: string): Promise<ChartPoint[]> {
+  try {
+    const period2 = new Date().toISOString().split("T")[0];
+    const period1 = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+      .toISOString().split("T")[0];
+
+    const historical = await yf.historical(symbol, { period1, period2, interval: "1d" });
+
+    return historical.map((d) => {
+      // Prix : .L en GBp → divise par 100
+      const close = symbol.endsWith(".L")
+        ? Math.round((d.close / 100) * 100) / 100
+        : Math.round(d.close * 100) / 100;
+
+      const date = new Date(d.date).toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "short",
+      });
+
+      return { date, prix: close };
+    });
+  } catch (err) {
+    console.error("[stock-detail] historical error:", err);
+    return [];
+  }
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function StockPage({ params }: { params: { symbol: string } }) {
@@ -150,8 +181,11 @@ export default async function StockPage({ params }: { params: { symbol: string }
   const { stock, indiceNom } = cached;
   const { pays, drapeau } = countryFromTicker(symbol);
 
-  // 2. Données live Yahoo Finance
-  const live = await getLiveData(symbol);
+  // 2. Données live + historique en parallèle
+  const [live, chartData] = await Promise.all([
+    getLiveData(symbol),
+    getHistoricalData(symbol),
+  ]);
 
   // 3. Fusion
   const detail: StockDetail = {
@@ -175,7 +209,7 @@ export default async function StockPage({ params }: { params: { symbol: string }
   return (
     <>
       <Navbar />
-      <StockDetailClient stock={detail} />
+      <StockDetailClient stock={detail} chartData={chartData} />
       <Footer />
     </>
   );

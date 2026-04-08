@@ -9,6 +9,11 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export interface ChartPoint {
+  date: string;
+  prix: number;
+}
+
 export interface StockDetail {
   ticker: string;
   nom: string;
@@ -33,71 +38,44 @@ type Period = "1S" | "1M" | "3M" | "6M" | "1A";
 
 const PERIODS: Period[] = ["1S", "1M", "3M", "6M", "1A"];
 
-const PERIOD_CONFIG: Record<Period, { points: number; unit: "day" | "week" | "month"; label: string }> = {
-  "1S": { points: 7,  unit: "day",   label: "1 semaine" },
-  "1M": { points: 22, unit: "day",   label: "1 mois" },
-  "3M": { points: 13, unit: "week",  label: "3 mois" },
-  "6M": { points: 26, unit: "week",  label: "6 mois" },
-  "1A": { points: 52, unit: "week",  label: "1 an" },
+const PERIOD_POINTS: Record<Period, number> = {
+  "1S":  7,
+  "1M":  30,
+  "3M":  90,
+  "6M":  180,
+  "1A":  Infinity,
 };
-
-// ─── Générateur de données simulées (seeded, reproductible) ──────────────────
-
-function seededRng(seed: number) {
-  let s = (seed * 1664525 + 1013904223) >>> 0;
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0;
-    return s / 0x100000000;
-  };
-}
-
-function generateHistory(
-  currentPrice: number,
-  ticker: string,
-  points: number,
-  unit: "day" | "week" | "month"
-): { date: string; prix: number }[] {
-  const seed = ticker.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const rand = seededRng(seed + points);
-  const volatility = unit === "day" ? 0.012 : unit === "week" ? 0.025 : 0.04;
-
-  // Génère des prix en remontant depuis aujourd'hui
-  const prices: number[] = [currentPrice];
-  for (let i = 1; i < points; i++) {
-    const drift = (rand() - 0.485) * volatility * 2;
-    prices.unshift(prices[0] * (1 - drift));
-  }
-
-  // Génère les dates correspondantes
-  const now = new Date();
-  const msPerUnit = unit === "day" ? 86400000 : unit === "week" ? 7 * 86400000 : 30 * 86400000;
-
-  return prices.map((p, i) => {
-    const d = new Date(now.getTime() - (points - 1 - i) * msPerUnit);
-    const label = unit === "day"
-      ? d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
-      : unit === "week"
-        ? d.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })
-        : d.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
-    return { date: label, prix: Math.round(p * 100) / 100 };
-  });
-}
 
 // ─── Tooltip custom ───────────────────────────────────────────────────────────
 
-function CustomTooltip({ active, payload, label, prixDevise }: {
+interface TooltipEntry {
+  date: string;
+  prix: number;
+  varJour: number | null;
+}
+
+function CustomTooltip({
+  active, payload, prixDevise,
+}: {
   active?: boolean;
-  payload?: { value: number }[];
-  label?: string;
+  payload?: { payload: TooltipEntry }[];
   prixDevise: string;
 }) {
   if (!active || !payload?.length) return null;
+  const d = payload[0].payload;
+  const pos = d.varJour != null ? d.varJour >= 0 : true;
+
   return (
     <div className="bg-white rounded-xl px-4 py-3" style={{ boxShadow: "0 4px 20px rgba(14,52,120,0.14)" }}>
-      <p className="text-[#8A9BB0] text-xs mb-1">{label}</p>
+      <p className="text-[#8A9BB0] text-xs mb-1">{d.date}</p>
       <p className="text-[#0C2248] text-sm font-bold tabular-nums">
-        {payload[0].value.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {prixDevise}
+        {d.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {prixDevise}
       </p>
+      {d.varJour != null && (
+        <p className={`text-xs font-semibold mt-0.5 ${pos ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+          {pos ? "▲" : "▼"} {Math.abs(d.varJour).toFixed(2)}% vs J-1
+        </p>
+      )}
     </div>
   );
 }
@@ -116,27 +94,50 @@ function MetricCard({ label, value, sub }: { label: string; value: string; sub?:
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
-export default function StockDetailClient({ stock }: { stock: StockDetail }) {
+export default function StockDetailClient({
+  stock,
+  chartData,
+}: {
+  stock: StockDetail;
+  chartData: ChartPoint[];
+}) {
   const [period, setPeriod] = useState<Period>("1M");
 
-  const { points, unit } = PERIOD_CONFIG[period];
-  const chartData = useMemo(
-    () => generateHistory(stock.prix, stock.ticker, points, unit),
-    [stock.prix, stock.ticker, points, unit]
-  );
+  // Filtre côté client — slice les N derniers points
+  const filteredData = useMemo<TooltipEntry[]>(() => {
+    const n = PERIOD_POINTS[period];
+    const slice = n === Infinity ? chartData : chartData.slice(-n);
+    return slice.map((d, i) => {
+      const prev = i > 0 ? slice[i - 1].prix : null;
+      const varJour = prev != null && prev > 0
+        ? Math.round(((d.prix - prev) / prev) * 10000) / 100
+        : null;
+      return { ...d, varJour };
+    });
+  }, [chartData, period]);
 
-  const chartMin = Math.min(...chartData.map((d) => d.prix));
-  const chartMax = Math.max(...chartData.map((d) => d.prix));
-  const domain: [number, number] = [chartMin * 0.995, chartMax * 1.005];
+  const hasData = filteredData.length > 0;
+  const prices  = filteredData.map((d) => d.prix);
+  const minP    = hasData ? Math.min(...prices) : 0;
+  const maxP    = hasData ? Math.max(...prices) : 1;
+  const domain: [number, number] = [minP * 0.995, maxP * 1.005];
 
-  const pos = stock.variation >= 0;
-  const prixDisplay = stock.prix % 1 === 0
-    ? stock.prix.toLocaleString("fr-FR")
-    : stock.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // Détermine si le graphique est positif (1er → dernier)
+  const chartPositive = hasData
+    ? filteredData[filteredData.length - 1].prix >= filteredData[0].prix
+    : true;
+  const lineColor = chartPositive ? "#22C55E" : "#EF4444";
+  const gradId    = chartPositive ? "gradGreen" : "gradRed";
+
+  const pos         = stock.variation >= 0;
+  const prixDisplay = stock.prix.toLocaleString("fr-FR", {
+    minimumFractionDigits: stock.prix % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  });
 
   function fmtPrice(v: number | null | undefined): string {
     if (v == null) return "—";
-    return `${v % 1 === 0 ? v.toLocaleString("fr-FR") : v.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${stock.prixDevise}`;
+    return `${v.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${stock.prixDevise}`;
   }
 
   function fmtVolume(v: number | null | undefined): string {
@@ -154,7 +155,7 @@ export default function StockDetailClient({ stock }: { stock: StockDetail }) {
       <section className="bg-[#0C2248] pt-20 pb-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
 
-          {/* Back */}
+          {/* Retour */}
           <Link href="/marches"
             className="inline-flex items-center gap-1.5 text-white/40 hover:text-white/70 text-sm mb-8 transition-colors group">
             <svg className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +164,7 @@ export default function StockDetailClient({ stock }: { stock: StockDetail }) {
             Retour aux marchés
           </Link>
 
-          {/* Drapeau + identité */}
+          {/* Identité */}
           <div className="flex items-start gap-4 mb-6">
             <span className="text-4xl leading-none select-none mt-1">{stock.drapeau}</span>
             <div>
@@ -210,7 +211,6 @@ export default function StockDetailClient({ stock }: { stock: StockDetail }) {
         {/* ── Graphique ─────────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl px-5 sm:px-7 pt-6 pb-4" style={{ boxShadow: "0 2px 16px rgba(14,52,120,0.08)" }}>
 
-          {/* Filtres de période */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-[#0C2248] font-bold text-base">Évolution du cours</h2>
             <div className="flex gap-1 bg-[#F4F7FC] rounded-xl p-1">
@@ -230,64 +230,66 @@ export default function StockDetailClient({ stock }: { stock: StockDetail }) {
             </div>
           </div>
 
-          <ResponsiveContainer width="100%" height={260}>
-            <AreaChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#2E80CE" stopOpacity={0.18} />
-                  <stop offset="100%" stopColor="#2E80CE" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} stroke="#F0F7FF" strokeWidth={1} />
-              <XAxis
-                dataKey="date"
-                tick={{ fill: "#8A9BB0", fontSize: 11 }}
-                tickLine={false}
-                axisLine={false}
-                interval="preserveStartEnd"
-              />
-              <YAxis
-                orientation="right"
-                domain={domain}
-                tick={{ fill: "#8A9BB0", fontSize: 11 }}
-                tickLine={false}
-                axisLine={false}
-                tickFormatter={(v) => v.toLocaleString("fr-FR", { maximumFractionDigits: 0 })}
-                width={60}
-              />
-              <Tooltip
-                content={(props) => (
-                  <CustomTooltip
-                    active={props.active}
-                    payload={props.payload as unknown as { value: number }[] | undefined}
-                    label={props.label as string}
-                    prixDevise={stock.prixDevise}
-                  />
-                )}
-              />
-              <Area
-                type="monotone"
-                dataKey="prix"
-                stroke="#2E80CE"
-                strokeWidth={2}
-                fill="url(#areaGrad)"
-                dot={false}
-                activeDot={{ r: 4, fill: "#2E80CE", strokeWidth: 0 }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {hasData ? (
+            <ResponsiveContainer width="100%" height={260}>
+              <AreaChart data={filteredData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%"   stopColor={lineColor} stopOpacity={0.15} />
+                    <stop offset="100%" stopColor={lineColor} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} stroke="#F0F7FF" strokeWidth={1} />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: "#8A9BB0", fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  interval="preserveStartEnd"
+                />
+                <YAxis
+                  orientation="right"
+                  domain={domain}
+                  tick={{ fill: "#8A9BB0", fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => v.toLocaleString("fr-FR", { maximumFractionDigits: 0 })}
+                  width={64}
+                />
+                <Tooltip
+                  content={(props) => (
+                    <CustomTooltip
+                      active={props.active}
+                      payload={props.payload as unknown as { payload: TooltipEntry }[] | undefined}
+                      prixDevise={stock.prixDevise}
+                    />
+                  )}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="prix"
+                  stroke={lineColor}
+                  strokeWidth={2}
+                  fill={`url(#${gradId})`}
+                  dot={false}
+                  activeDot={{ r: 4, fill: lineColor, strokeWidth: 0 }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-64 flex items-center justify-center">
+              <p className="text-[#8A9BB0] text-sm">Données historiques non disponibles.</p>
+            </div>
+          )}
 
           <p className="text-[#8A9BB0] text-xs mt-2 text-center">
-            Données simulées à titre indicatif · non contractuelles
+            Cours de clôture · Yahoo Finance · {filteredData.length} points
           </p>
         </div>
 
         {/* ── Métriques ─────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          <MetricCard
-            label="Prix actuel"
-            value={fmtPrice(stock.prix)}
-          />
+          <MetricCard label="Prix actuel"    value={fmtPrice(stock.prix)} />
           <MetricCard
             label="Variation jour"
             value={`${pos ? "+" : ""}${stock.variation.toFixed(2)}%`}
@@ -297,18 +299,9 @@ export default function StockDetailClient({ stock }: { stock: StockDetail }) {
             label="Capitalisation"
             value={stock.capMds > 0 ? `${stock.capMds.toLocaleString("fr-FR")} Mds${stock.currency}` : "—"}
           />
-          <MetricCard
-            label="Volume"
-            value={fmtVolume(stock.volume)}
-          />
-          <MetricCard
-            label="Plus haut 52S"
-            value={fmtPrice(stock.high52w)}
-          />
-          <MetricCard
-            label="Plus bas 52S"
-            value={fmtPrice(stock.low52w)}
-          />
+          <MetricCard label="Volume"         value={fmtVolume(stock.volume)} />
+          <MetricCard label="Plus haut 52S"  value={fmtPrice(stock.high52w)} />
+          <MetricCard label="Plus bas 52S"   value={fmtPrice(stock.low52w)} />
         </div>
 
         {/* ── À propos ──────────────────────────────────────────────────────── */}
@@ -328,9 +321,9 @@ export default function StockDetailClient({ stock }: { stock: StockDetail }) {
             ))}
           </div>
           <p className="text-[#8A9BB0] text-sm leading-relaxed">
-            Les données affichées sont fournies par Yahoo Finance et actualisées quotidiennement.
-            Elles sont présentées à titre éducatif uniquement et ne constituent pas un conseil en investissement.
-            Le graphique d&apos;évolution est une simulation indicative basée sur le prix et la volatilité observés.
+            Cours de clôture journaliers fournis par Yahoo Finance.
+            Les données sont actualisées toutes les heures et présentées à titre éducatif uniquement.
+            Elles ne constituent pas un conseil en investissement.
           </p>
         </div>
 
