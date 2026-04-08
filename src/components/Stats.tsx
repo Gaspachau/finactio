@@ -85,13 +85,13 @@ export default function Stats() {
   }, []);
 
   return (
-    <section ref={ref} className="bg-[#1F2937] border-y border-[#111827]">
+    <section ref={ref} className="bg-[#0C2248] border-y border-[#1E3A5F]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
         {stats.map((stat) => (
           <div key={stat.label}>
             <p
-              className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#059669] mb-2 tabular-nums"
-              style={{ fontFamily: "var(--font-barlow-condensed)" }}
+              className="text-5xl sm:text-6xl md:text-7xl font-black text-[#2E80CE] mb-2 tabular-nums"
+              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
             >
               <CountUp
                 target={stat.target}
@@ -101,7 +101,7 @@ export default function Stats() {
                 started={started}
               />
             </p>
-            <p className="text-[#6B7280] text-sm">{stat.label}</p>
+            <p className="text-[#F0F7FF]/60 text-sm">{stat.label}</p>
           </div>
         ))}
       </div>

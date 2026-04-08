@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function SimulateursPage() {
   return (
-    <main className="min-h-screen bg-[#111827]">
+    <main className="min-h-screen bg-[#F0F7FF]">
       <Navbar />
       <SimulateursPageContent />
     </main>

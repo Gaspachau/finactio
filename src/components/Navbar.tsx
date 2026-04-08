@@ -16,15 +16,16 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#111827]/90 backdrop-blur-sm border-b border-[#1F2937]">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#F0F7FF]/92 backdrop-blur-md border-b border-[#DDEAFF]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link
           href="/"
-          className="text-[#059669] text-2xl tracking-wider uppercase"
-          style={{ fontFamily: "var(--font-barlow-condensed)", fontWeight: 700 }}
+          className="text-2xl tracking-tight uppercase select-none"
+          style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 900 }}
         >
-          FINACTIO
+          <span className="text-[#0C2248]">FIN</span>
+          <span className="text-[#2E80CE]">ACTIO</span>
         </Link>
 
         {/* Desktop nav links */}
@@ -33,7 +34,7 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              className="text-[#6B7280] hover:text-[#F9F9F9] transition-colors text-sm font-medium tracking-wide"
+              className="text-[#1E3A5F] hover:text-[#0C2248] transition-colors text-sm font-medium tracking-wide"
             >
               {label}
             </Link>
@@ -43,13 +44,13 @@ export default function Navbar() {
         {/* CTA + lang toggle + mobile toggle */}
         <div className="flex items-center gap-3">
           {/* Language toggle */}
-          <div className="flex items-center bg-[#1F2937] rounded-lg border border-[#374151] overflow-hidden text-xs font-semibold">
+          <div className="flex items-center bg-[#DDEAFF] rounded-lg border border-[#BDD3F0] overflow-hidden text-xs font-bold">
             <button
               onClick={() => lang !== "fr" && toggleLanguage()}
               className={`px-2.5 py-1.5 transition-colors ${
                 lang === "fr"
-                  ? "bg-[#059669] text-white"
-                  : "text-[#6B7280] hover:text-[#F9F9F9]"
+                  ? "bg-[#1E3A5F] text-white"
+                  : "text-[#1E3A5F] hover:text-[#0C2248]"
               }`}
             >
               FR
@@ -58,8 +59,8 @@ export default function Navbar() {
               onClick={() => lang !== "en" && toggleLanguage()}
               className={`px-2.5 py-1.5 transition-colors ${
                 lang === "en"
-                  ? "bg-[#059669] text-white"
-                  : "text-[#6B7280] hover:text-[#F9F9F9]"
+                  ? "bg-[#1E3A5F] text-white"
+                  : "text-[#1E3A5F] hover:text-[#0C2248]"
               }`}
             >
               EN
@@ -68,12 +69,12 @@ export default function Navbar() {
 
           <Link
             href="/#cta"
-            className="hidden md:inline-flex bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors"
+            className="hidden md:inline-flex bg-[#1E3A5F] hover:bg-[#0C2248] text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors"
           >
             {t.nav.commencer}
           </Link>
           <button
-            className="md:hidden text-[#6B7280] hover:text-[#F9F9F9]"
+            className="md:hidden text-[#1E3A5F] hover:text-[#0C2248]"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Menu"
           >
@@ -90,12 +91,12 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#1F2937] border-t border-[#111827] px-4 py-4 flex flex-col gap-4">
+        <div className="md:hidden bg-[#DDEAFF] border-t border-[#BDD3F0] px-4 py-4 flex flex-col gap-4">
           {NAV_LINKS.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
-              className="text-[#6B7280] hover:text-[#F9F9F9] transition-colors font-medium"
+              className="text-[#1E3A5F] hover:text-[#0C2248] transition-colors font-medium"
               onClick={() => setMenuOpen(false)}
             >
               {label}
@@ -103,7 +104,7 @@ export default function Navbar() {
           ))}
           <Link
             href="/#cta"
-            className="bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold px-5 py-2 rounded-lg text-center transition-colors"
+            className="bg-[#1E3A5F] hover:bg-[#0C2248] text-white text-sm font-semibold px-5 py-2 rounded-lg text-center transition-colors"
             onClick={() => setMenuOpen(false)}
           >
             {t.nav.commencer}

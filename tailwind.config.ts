@@ -9,18 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#111827",
-        surface: "#1F2937",
-        emerald: {
-          DEFAULT: "#059669",
-          hover: "#047857",
-        },
-        light: "#F9F9F9",
-        muted: "#6B7280",
+        givre: "#F0F7FF",
+        brume: "#DDEAFF",
+        ceruleen: "#2E80CE",
+        ardoise: "#1E3A5F",
+        abyssal: "#0C2248",
+        hausse: "#4ADE80",
+        baisse: "#EF4444",
       },
       fontFamily: {
-        barlow: ["Barlow", "sans-serif"],
-        "barlow-condensed": ["Barlow Condensed", "sans-serif"],
+        cabinet: ["'Cabinet Grotesk'", "sans-serif"],
       },
     },
   },

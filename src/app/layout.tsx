@@ -1,21 +1,6 @@
 import type { Metadata } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-
-const barlow = Barlow({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-barlow",
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-barlow-condensed",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Finactio — Apprends la finance qui rapporte",
@@ -27,8 +12,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${barlow.variable} ${barlowCondensed.variable}`}>
-      <body className="bg-[#111827] text-[#F9F9F9] antialiased" style={{ fontFamily: "var(--font-barlow), sans-serif" }}>
+    <html lang="fr">
+      <head>
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@100,200,300,400,500,700,800,900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body
+        className="bg-[#F0F7FF] text-[#0C2248] antialiased"
+        style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+      >
         <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>

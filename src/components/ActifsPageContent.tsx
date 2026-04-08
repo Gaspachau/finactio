@@ -16,26 +16,26 @@ export default function ActifsPageContent({ actifs }: { actifs: ActifData[] }) {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(5,150,105,0.10) 0%, transparent 70%)",
+              "radial-gradient(ellipse 60% 40% at 50% 0%, rgba(46,128,206,0.10) 0%, transparent 70%)",
           }}
         />
         <div className="relative max-w-6xl mx-auto">
-          <p className="text-[#059669] text-sm font-semibold uppercase tracking-widest mb-3">
+          <p className="text-[#2E80CE] text-sm font-semibold uppercase tracking-widest mb-3">
             {ap.label}
           </p>
           <h1
-            className="text-5xl sm:text-6xl md:text-7xl font-bold uppercase text-[#F9F9F9] leading-none mb-4"
-            style={{ fontFamily: "var(--font-barlow-condensed)" }}
+            className="text-5xl sm:text-6xl md:text-7xl font-black uppercase text-[#0C2248] leading-none mb-4"
+            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             {ap.title}
           </h1>
           <h2
-            className="text-2xl sm:text-3xl font-bold uppercase text-[#059669] leading-none mb-4"
-            style={{ fontFamily: "var(--font-barlow-condensed)" }}
+            className="text-2xl sm:text-3xl font-black uppercase text-[#2E80CE] leading-none mb-4"
+            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             {ap.heading}
           </h2>
-          <p className="text-[#6B7280] text-lg max-w-xl">
+          <p className="text-[#1E3A5F] text-lg max-w-xl">
             {ap.subtitle}
           </p>
         </div>
@@ -48,18 +48,18 @@ export default function ActifsPageContent({ actifs }: { actifs: ActifData[] }) {
             <Link
               key={actif.slug}
               href={`/actifs/${actif.slug}`}
-              className="card-hover bg-[#1F2937] rounded-2xl p-6 flex flex-col gap-4 group"
+              className="card-hover bg-white rounded-2xl p-6 flex flex-col gap-4 group border border-[#DDEAFF]"
             >
               {/* Header card */}
               <div className="flex items-start justify-between">
                 <div>
                   <span
-                    className="text-3xl font-bold text-[#F9F9F9] uppercase leading-none"
-                    style={{ fontFamily: "var(--font-barlow-condensed)" }}
+                    className="text-3xl font-black text-[#0C2248] uppercase leading-none"
+                    style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
                   >
                     {actif.ticker}
                   </span>
-                  <p className="text-[#6B7280] text-sm mt-0.5">{actif.name}</p>
+                  <p className="text-[#1E3A5F] text-sm mt-0.5">{actif.name}</p>
                 </div>
                 <span
                   className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${actif.typeBadgeClass}`}
@@ -70,12 +70,12 @@ export default function ActifsPageContent({ actifs }: { actifs: ActifData[] }) {
 
               {/* Prix + variation */}
               <div className="flex items-baseline gap-3">
-                <span className="text-[#F9F9F9] text-2xl font-semibold">
+                <span className="text-[#0C2248] text-2xl font-semibold">
                   {actif.price}
                 </span>
                 <span
                   className={`text-sm font-semibold ${
-                    actif.changePositive ? "text-[#059669]" : "text-red-400"
+                    actif.changePositive ? "text-[#4ADE80]" : "text-[#EF4444]"
                   }`}
                 >
                   {actif.change}
@@ -83,13 +83,13 @@ export default function ActifsPageContent({ actifs }: { actifs: ActifData[] }) {
               </div>
 
               {/* 3 métriques */}
-              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#111827]">
+              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#DDEAFF]">
                 {actif.metrics.slice(0, 3).map((m) => (
                   <div key={m.label}>
-                    <p className="text-[#6B7280] text-xs mb-0.5">{m.label}</p>
+                    <p className="text-[#1E3A5F]/60 text-xs mb-0.5">{m.label}</p>
                     <p
-                      className="text-[#F9F9F9] text-sm font-semibold"
-                      style={{ fontFamily: "var(--font-barlow-condensed)" }}
+                      className="text-[#0C2248] text-sm font-semibold"
+                      style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
                     >
                       {m.value}
                     </p>
@@ -98,7 +98,7 @@ export default function ActifsPageContent({ actifs }: { actifs: ActifData[] }) {
               </div>
 
               {/* CTA */}
-              <div className="mt-auto flex items-center gap-2 text-[#059669] font-semibold text-sm group-hover:gap-3 transition-all">
+              <div className="mt-auto flex items-center gap-2 text-[#2E80CE] font-semibold text-sm group-hover:gap-3 transition-all">
                 {ap.voirFiche}
                 <svg
                   className="w-4 h-4"

@@ -1,24 +1,28 @@
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@100,200,300,400,500,700,800,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #111827;
-  --foreground: #F9F9F9;
+  --background: #F0F7FF;
+  --foreground: #0C2248;
+  --font-cabinet: 'Cabinet Grotesk', sans-serif;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
+  font-family: var(--font-cabinet);
 }
 
 /* Hero dot grid texture */
 .hero-grid {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(46, 128, 206, 0.08) 1px, transparent 1px);
   background-size: 30px 30px;
 }
 
-/* Animated underline under "TON ARGENT" */
+/* Animated underline */
 @keyframes underline-grow {
   from {
     transform: scaleX(0);
@@ -34,39 +38,40 @@ body {
   content: "";
   display: block;
   height: 4px;
-  background: linear-gradient(90deg, #059669, #34d399);
+  background: linear-gradient(90deg, #2E80CE, #93C5FD);
   border-radius: 2px;
   margin-top: 4px;
   animation: underline-grow 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
 }
 
-/* Button pulse + glow */
+/* Button pulse — ardoise */
 @keyframes btn-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.5);
+    box-shadow: 0 0 0 0 rgba(30, 58, 95, 0.4);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(5, 150, 105, 0);
+    box-shadow: 0 0 0 8px rgba(30, 58, 95, 0);
   }
 }
 
-.btn-emerald {
+.btn-ardoise {
   animation: btn-pulse 2.5s ease-in-out infinite;
   transition: box-shadow 0.3s ease, background-color 0.2s ease;
 }
 
-.btn-emerald:hover {
-  box-shadow: 0 0 28px rgba(5, 150, 105, 0.6), 0 0 60px rgba(5, 150, 105, 0.2);
+.btn-ardoise:hover {
+  box-shadow: 0 0 28px rgba(30, 58, 95, 0.35), 0 0 60px rgba(46, 128, 206, 0.15);
   animation: none;
 }
 
-/* Card glow on hover */
+/* Card hover — ceruleen shadow */
 .card-hover {
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
 .card-hover:hover {
-  box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.6), 0 0 30px rgba(5, 150, 105, 0.12);
+  box-shadow: 0 0 0 2px rgba(46, 128, 206, 0.5), 0 8px 32px rgba(46, 128, 206, 0.12);
+  transform: translateY(-1px);
 }
 
 /* Metric value fade-up on change */
@@ -78,5 +83,10 @@ body {
   animation: fade-up 0.3s ease-out forwards;
 }
 
-/* Recharts cursor override */
+/* Recharts cursor */
 .recharts-wrapper { cursor: crosshair; }
+
+/* Slider thumb custom */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}

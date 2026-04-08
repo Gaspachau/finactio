@@ -135,10 +135,10 @@ function ButtonSelect({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-between items-baseline">
-        <p className="text-[#6B7280] text-sm">{label}</p>
+        <p className="text-[#1E3A5F] text-sm">{label}</p>
         <span
-          className="text-[#F9F9F9] text-xl font-bold tabular-nums"
-          style={{ fontFamily: "var(--font-barlow-condensed)" }}
+          className="text-[#0C2248] text-xl font-bold tabular-nums"
+          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
         >
           {value.toLocaleString("fr-FR")} €
         </span>
@@ -151,8 +151,8 @@ function ButtonSelect({
             onClick={() => selectPreset(p)}
             className={`py-2.5 px-1 rounded-xl text-sm font-semibold border transition-all ${
               activePreset === p
-                ? "bg-[#059669] border-[#059669] text-white shadow-[0_0_12px_rgba(5,150,105,0.3)]"
-                : "bg-[#111827] border-[#374151] text-[#6B7280] hover:border-[#059669]/50 hover:text-[#F9F9F9]"
+                ? "bg-[#1E3A5F] border-[#1E3A5F] text-white shadow-[0_0_12px_rgba(46,128,206,0.25)]"
+                : "bg-[#F0F7FF] border-[#BDD3F0] text-[#1E3A5F] hover:border-[#2E80CE]/50 hover:text-[#0C2248]"
             }`}
           >
             {fmtPreset(p)}
@@ -167,9 +167,9 @@ function ButtonSelect({
           placeholder={placeholder}
           value={rawInput}
           onChange={handleInput}
-          className="w-full bg-[#111827] border border-[#374151] text-[#F9F9F9] placeholder-[#4B5563] rounded-xl px-4 py-2.5 pr-8 text-sm focus:outline-none focus:border-[#059669] transition-colors"
+          className="w-full bg-[#F0F7FF] border border-[#BDD3F0] text-[#0C2248] placeholder-[#1E3A5F]/40 rounded-xl px-4 py-2.5 pr-8 text-sm focus:outline-none focus:border-[#2E80CE] transition-colors"
         />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] text-sm pointer-events-none">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1E3A5F] text-sm pointer-events-none">
           €
         </span>
       </div>
@@ -187,7 +187,7 @@ function Slider({
   step,
   display,
   onChange,
-  accent = "#059669",
+  accent = "#2E80CE",
 }: {
   label: string;
   value: number;
@@ -202,15 +202,15 @@ function Slider({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between items-baseline">
-        <label className="text-[#6B7280] text-sm">{label}</label>
+        <label className="text-[#1E3A5F] text-sm">{label}</label>
         <span
-          className="text-[#F9F9F9] text-xl font-bold tabular-nums"
-          style={{ fontFamily: "var(--font-barlow-condensed)" }}
+          className="text-[#0C2248] text-xl font-bold tabular-nums"
+          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
         >
           {display}
         </span>
       </div>
-      <div className="relative h-2 rounded-full bg-[#374151]">
+      <div className="relative h-2 rounded-full bg-[#DDEAFF]">
         <div
           className="absolute inset-y-0 left-0 rounded-full transition-all duration-150"
           style={{ width: `${pct}%`, backgroundColor: accent }}
@@ -226,11 +226,11 @@ function Slider({
           style={{ zIndex: 2 }}
         />
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-[#111827] shadow pointer-events-none transition-all duration-150"
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow pointer-events-none transition-all duration-150"
           style={{ left: `calc(${pct}% - 8px)`, backgroundColor: accent, zIndex: 1 }}
         />
       </div>
-      <div className="flex justify-between text-[#4B5563] text-xs">
+      <div className="flex justify-between text-[#1E3A5F]/60 text-xs">
         <span>{min.toLocaleString("fr-FR")}</span>
         <span>{max.toLocaleString("fr-FR")}</span>
       </div>
@@ -259,37 +259,37 @@ function CustomTooltip({
   const totalB = payload.find((p) => p.name === "totalB")?.value;
 
   return (
-    <div className="bg-[#111827] border border-[#059669]/40 rounded-xl px-5 py-4 text-sm shadow-2xl shadow-[#059669]/10 min-w-[200px]">
-      <p className="text-[#059669] text-xs font-bold uppercase tracking-widest mb-3">
+    <div className="bg-white border border-[#2E80CE]/40 rounded-xl px-5 py-4 text-sm shadow-xl shadow-[#2E80CE]/10 min-w-[200px]">
+      <p className="text-[#2E80CE] text-xs font-bold uppercase tracking-widest mb-3">
         {tSim.annee} {label}
       </p>
       <p
-        className="text-[#F9F9F9] text-2xl font-bold mb-3"
-        style={{ fontFamily: "var(--font-barlow-condensed)" }}
+        className="text-[#0C2248] text-2xl font-bold mb-3"
+        style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
       >
         {formatEur(verse + interets)}
       </p>
       <div className="space-y-1.5">
         <div className="flex items-center justify-between gap-8">
-          <span className="flex items-center gap-2 text-xs text-[#6B7280]">
-            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "#1E3A5F", border: "1px solid #2D5A8E" }} />
+          <span className="flex items-center gap-2 text-xs text-[#1E3A5F]">
+            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "#DDEAFF", border: "1px solid #1E3A5F" }} />
             {tSim.capitalVerse}
           </span>
-          <span className="text-[#9CA3AF] text-xs font-medium tabular-nums">
+          <span className="text-[#1E3A5F] text-xs font-medium tabular-nums">
             {formatEur(verse)}
           </span>
         </div>
         <div className="flex items-center justify-between gap-8">
-          <span className="flex items-center gap-2 text-xs text-[#6B7280]">
-            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "#059669", border: "1px solid #00C896" }} />
+          <span className="flex items-center gap-2 text-xs text-[#1E3A5F]">
+            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "#2E80CE", border: "1px solid #1C6BB5" }} />
             {tSim.interetsGeneres}
           </span>
-          <span className="text-[#00C896] text-xs font-semibold tabular-nums">
+          <span className="text-[#2E80CE] text-xs font-semibold tabular-nums">
             {formatEur(interets)}
           </span>
         </div>
         {showB && totalB !== undefined && (
-          <div className="flex items-center justify-between gap-8 pt-1.5 mt-1.5 border-t border-[#1F2937]">
+          <div className="flex items-center justify-between gap-8 pt-1.5 mt-1.5 border-t border-[#DDEAFF]">
             <span className="text-xs text-[#F59E0B]">{tSim.scenarioB}</span>
             <span className="text-[#F59E0B] text-xs font-semibold tabular-nums">
               {formatEur(totalB)}
@@ -320,13 +320,13 @@ function MilestoneLabel({
         width={len * 7 + 10}
         height={17}
         rx={4}
-        fill="#0F172A"
-        fillOpacity={0.9}
+        fill="#F0F7FF"
+        fillOpacity={0.95}
       />
       <text
         x={x + 8}
         y={15}
-        fill="rgba(255,255,255,0.45)"
+        fill="rgba(30,58,95,0.65)"
         fontSize={9}
         fontWeight={700}
       >
@@ -413,7 +413,7 @@ export default function SimulateurInterets() {
   return (
     <div className="space-y-6">
       {/* ── Contrôles ── */}
-      <div className="bg-[#1F2937] rounded-2xl p-6 sm:p-8 space-y-8">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 space-y-8 border border-[#DDEAFF]">
         {/* Capital + Versement (boutons) */}
         <div className="space-y-6">
           <ButtonSelect
@@ -460,61 +460,61 @@ export default function SimulateurInterets() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fade-up"
         >
           {/* Capital final */}
-          <div className="col-span-2 sm:col-span-1 bg-[#059669]/10 border border-[#059669]/30 rounded-2xl px-5 py-6 text-center">
-            <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
+          <div className="col-span-2 sm:col-span-1 bg-[#1E3A5F]/5 border border-[#2E80CE]/30 rounded-2xl px-5 py-6 text-center">
+            <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.capitalFinal}
             </p>
             <p
-              className="text-3xl sm:text-4xl font-bold text-[#059669] tabular-nums leading-none mb-1"
-              style={{ fontFamily: "var(--font-barlow-condensed)" }}
+              className="text-3xl sm:text-4xl font-bold text-[#2E80CE] tabular-nums leading-none mb-1"
+              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
             >
               {formatEur(capitalFinal)}
             </p>
-            <p className="text-[#059669]/60 text-xs">
+            <p className="text-[#2E80CE]/60 text-xs">
               {tSim.gainsSubtitle(formatEur(totalInterets))}
             </p>
           </div>
 
           {/* Total versé */}
-          <div className="bg-[#111827] rounded-2xl px-5 py-6 text-center">
-            <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
+          <div className="bg-[#F0F7FF] rounded-2xl px-5 py-6 text-center">
+            <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.totalVerse}
             </p>
             <p
-              className="text-2xl sm:text-3xl font-bold text-[#F9F9F9] tabular-nums leading-none mb-1"
-              style={{ fontFamily: "var(--font-barlow-condensed)" }}
+              className="text-2xl sm:text-3xl font-bold text-[#0C2248] tabular-nums leading-none mb-1"
+              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
             >
               {formatEur(totalVerse)}
             </p>
-            <p className="text-[#4B5563] text-xs">{tSim.effortSubtitle}</p>
+            <p className="text-[#1E3A5F]/60 text-xs">{tSim.effortSubtitle}</p>
           </div>
 
           {/* Intérêts */}
-          <div className="bg-[#111827] rounded-2xl px-5 py-6 text-center">
-            <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
+          <div className="bg-[#F0F7FF] rounded-2xl px-5 py-6 text-center">
+            <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.interetsGeneres}
             </p>
             <p
-              className="text-2xl sm:text-3xl font-bold text-[#F9F9F9] tabular-nums leading-none mb-1"
-              style={{ fontFamily: "var(--font-barlow-condensed)" }}
+              className="text-2xl sm:text-3xl font-bold text-[#0C2248] tabular-nums leading-none mb-1"
+              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
             >
               {formatEur(totalInterets)}
             </p>
-            <p className="text-[#4B5563] text-xs">{tSim.sansTravailler}</p>
+            <p className="text-[#1E3A5F]/60 text-xs">{tSim.sansTravailler}</p>
           </div>
 
           {/* Multiplicateur */}
-          <div className="bg-[#111827] rounded-2xl px-5 py-6 text-center">
-            <p className="text-[#6B7280] text-xs uppercase tracking-widest mb-2">
+          <div className="bg-[#F0F7FF] rounded-2xl px-5 py-6 text-center">
+            <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.multiplicateur}
             </p>
             <p
-              className="text-2xl sm:text-3xl font-bold text-[#F9F9F9] tabular-nums leading-none mb-1"
-              style={{ fontFamily: "var(--font-barlow-condensed)" }}
+              className="text-2xl sm:text-3xl font-bold text-[#0C2248] tabular-nums leading-none mb-1"
+              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
             >
               ×{multiplicateur.toFixed(1)}
             </p>
-            <p className="text-[#4B5563] text-xs">{tSim.miseMultipliee}</p>
+            <p className="text-[#1E3A5F]/60 text-xs">{tSim.miseMultipliee}</p>
           </div>
         </div>
 
@@ -524,10 +524,10 @@ export default function SimulateurInterets() {
             {insights.map((text, i) => (
               <div
                 key={i}
-                className="flex items-start gap-3 bg-[#111827] rounded-xl px-4 py-3"
+                className="flex items-start gap-3 bg-[#F0F7FF] rounded-xl px-4 py-3 border border-[#DDEAFF]"
               >
-                <span className="text-[#059669] mt-0.5 shrink-0">💡</span>
-                <p className="text-[#9CA3AF] text-sm leading-relaxed">{text}</p>
+                <span className="text-[#2E80CE] mt-0.5 shrink-0">💡</span>
+                <p className="text-[#1E3A5F] text-sm leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
@@ -535,13 +535,13 @@ export default function SimulateurInterets() {
       </div>
 
       {/* ── Scénario B ── */}
-      <div className="bg-[#1F2937] rounded-2xl p-6 sm:p-8">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DDEAFF]">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-[#F9F9F9] font-semibold text-sm">
+            <p className="text-[#0C2248] font-semibold text-sm">
               {tSim.comparerScenario}
             </p>
-            <p className="text-[#6B7280] text-xs">
+            <p className="text-[#1E3A5F] text-xs">
               {tSim.comparerSubtitle}
             </p>
           </div>
@@ -550,7 +550,7 @@ export default function SimulateurInterets() {
             className={`px-4 py-2 rounded-lg text-sm font-semibold border transition-all ${
               showB
                 ? "bg-[#F59E0B]/10 border-[#F59E0B]/40 text-[#F59E0B]"
-                : "border-[#374151] text-[#6B7280] hover:border-[#6B7280] hover:text-[#F9F9F9]"
+                : "border-[#BDD3F0] text-[#1E3A5F] hover:border-[#1E3A5F] hover:text-[#0C2248]"
             }`}
           >
             {showB ? tSim.masquerScenarioB : tSim.ajouterScenario}
@@ -558,7 +558,7 @@ export default function SimulateurInterets() {
         </div>
 
         {showB && (
-          <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-[#374151]">
+          <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-[#BDD3F0]">
             <Slider
               label={tSim.capitalInitialB}
               value={scenB.capital}
@@ -604,15 +604,15 @@ export default function SimulateurInterets() {
       </div>
 
       {/* ── Graphique ── */}
-      <div className="bg-[#1F2937] rounded-2xl p-6 sm:p-8">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DDEAFF]">
         <div className="flex items-center justify-between mb-4">
           <p
-            className="text-[#F9F9F9] font-bold uppercase text-lg"
-            style={{ fontFamily: "var(--font-barlow-condensed)" }}
+            className="text-[#0C2248] font-bold uppercase text-lg"
+            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             {tSim.evolutionSur} {scenA.duree} {tSim.ans}
           </p>
-          <p className="text-[#4B5563] text-xs hidden sm:block">
+          <p className="text-[#1E3A5F]/60 text-xs hidden sm:block">
             {tSim.cliquePourExplorer}
           </p>
         </div>
@@ -641,32 +641,32 @@ export default function SimulateurInterets() {
           >
             <defs>
               <linearGradient id="gVerse" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1E3A5F" stopOpacity={1} />
-                <stop offset="100%" stopColor="#1E3A5F" stopOpacity={0.75} />
+                <stop offset="0%" stopColor="#DDEAFF" stopOpacity={1} />
+                <stop offset="100%" stopColor="#DDEAFF" stopOpacity={0.6} />
               </linearGradient>
               <linearGradient id="gInterets" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#059669" stopOpacity={0.85} />
-                <stop offset="100%" stopColor="#059669" stopOpacity={0.12} />
+                <stop offset="0%" stopColor="#2E80CE" stopOpacity={0.55} />
+                <stop offset="100%" stopColor="#2E80CE" stopOpacity={0.06} />
               </linearGradient>
             </defs>
 
             <CartesianGrid
               strokeDasharray="2 4"
-              stroke="#1F2937"
+              stroke="#E8F0FA"
               vertical={false}
-              strokeOpacity={0.8}
+              strokeOpacity={1}
             />
 
             <XAxis
               dataKey="annee"
               ticks={xTicks}
-              tick={{ fill: "#6B7280", fontSize: 11 }}
+              tick={{ fill: "#1E3A5F", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               tickFormatter={(v) => `${v}a`}
             />
             <YAxis
-              tick={{ fill: "#6B7280", fontSize: 11 }}
+              tick={{ fill: "#1E3A5F", fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               tickFormatter={formatYAxisKeur}
@@ -675,7 +675,7 @@ export default function SimulateurInterets() {
 
             <Tooltip
               content={<CustomTooltip showB={showB} tSim={tSim} />}
-              cursor={{ stroke: "#374151", strokeWidth: 1, strokeDasharray: "4 4" }}
+              cursor={{ stroke: "#BDD3F0", strokeWidth: 1.5, strokeDasharray: "4 4" }}
             />
 
             {/* Milestones */}
@@ -683,7 +683,7 @@ export default function SimulateurInterets() {
               <ReferenceLine
                 key={m.label}
                 x={m.year}
-                stroke="rgba(255,255,255,0.12)"
+                stroke="rgba(46,128,206,0.2)"
                 strokeWidth={1}
                 strokeDasharray="4 3"
                 label={<MilestoneLabel value={m.label} />}
@@ -694,7 +694,7 @@ export default function SimulateurInterets() {
             {pinnedYear !== null && (
               <ReferenceLine
                 x={pinnedYear}
-                stroke="#059669"
+                stroke="#2E80CE"
                 strokeWidth={1.5}
                 strokeDasharray="5 3"
               />
@@ -704,23 +704,23 @@ export default function SimulateurInterets() {
               type="monotone"
               dataKey="verse"
               stackId="a"
-              stroke="#2D5A8E"
+              stroke="#1E3A5F"
               strokeWidth={1.5}
               fill="url(#gVerse)"
               name="verse"
               dot={false}
-              activeDot={{ r: 4, fill: "#2D5A8E", stroke: "#111827", strokeWidth: 2 }}
+              activeDot={{ r: 4, fill: "#1E3A5F", stroke: "white", strokeWidth: 2 }}
             />
             <Area
               type="monotone"
               dataKey="interets"
               stackId="a"
-              stroke="#00C896"
+              stroke="#2E80CE"
               strokeWidth={2}
               fill="url(#gInterets)"
               name="interets"
               dot={false}
-              activeDot={{ r: 5, fill: "#00C896", stroke: "#111827", strokeWidth: 2 }}
+              activeDot={{ r: 5, fill: "#2E80CE", stroke: "white", strokeWidth: 2 }}
             />
 
             {showB && (
@@ -743,16 +743,16 @@ export default function SimulateurInterets() {
           <div className="flex items-center gap-2">
             <span
               className="w-3 h-3 rounded-sm"
-              style={{ background: "#1E3A5F", border: "1px solid #2D5A8E" }}
+              style={{ background: "#DDEAFF", border: "1px solid #1E3A5F" }}
             />
-            <span className="text-[#6B7280] text-xs">{tSim.capitalVerse}</span>
+            <span className="text-[#1E3A5F] text-xs">{tSim.capitalVerse}</span>
           </div>
           <div className="flex items-center gap-2">
             <span
               className="w-3 h-3 rounded-sm"
-              style={{ background: "#059669", border: "1px solid #00C896" }}
+              style={{ background: "#2E80CE", border: "1px solid #1C6BB5" }}
             />
-            <span className="text-[#6B7280] text-xs">{tSim.interetsGeneres}</span>
+            <span className="text-[#1E3A5F] text-xs">{tSim.interetsGeneres}</span>
           </div>
           {showB && (
             <div className="flex items-center gap-2">
@@ -760,21 +760,21 @@ export default function SimulateurInterets() {
                 className="w-6 h-0"
                 style={{ borderTop: "2px dashed #F59E0B", display: "block", width: 24 }}
               />
-              <span className="text-[#6B7280] text-xs">{tSim.scenarioB}</span>
+              <span className="text-[#1E3A5F] text-xs">{tSim.scenarioB}</span>
             </div>
           )}
         </div>
 
         {/* Panneau curseur épinglé */}
         {pinnedData && (
-          <div className="mt-5 bg-[#111827] rounded-xl border border-[#059669]/30 p-4">
+          <div className="mt-5 bg-[#F8FBFF] rounded-xl border border-[#2E80CE]/25 p-4">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-[#059669] font-semibold text-sm">
+              <p className="text-[#2E80CE] font-semibold text-sm">
                 📍 {tSim.annee} {pinnedYear}
               </p>
               <button
                 onClick={() => setPinnedYear(null)}
-                className="text-[#4B5563] hover:text-[#F9F9F9] text-xs transition-colors"
+                className="text-[#1E3A5F]/60 hover:text-[#0C2248] text-xs transition-colors"
               >
                 {tSim.fermer}
               </button>
@@ -783,38 +783,38 @@ export default function SimulateurInterets() {
               className={`grid gap-4 text-center ${showB && pinnedDataB ? "grid-cols-4" : "grid-cols-3"}`}
             >
               <div>
-                <p className="text-[#6B7280] text-xs mb-1">{tSim.capitalVerse}</p>
+                <p className="text-[#1E3A5F] text-xs mb-1">{tSim.capitalVerse}</p>
                 <p
-                  className="text-[#F9F9F9] font-bold"
-                  style={{ fontFamily: "var(--font-barlow-condensed)" }}
+                  className="text-[#0C2248] font-bold"
+                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
                 >
                   {formatEur(pinnedData.verse)}
                 </p>
               </div>
               <div>
-                <p className="text-[#6B7280] text-xs mb-1">{tSim.interets}</p>
+                <p className="text-[#1E3A5F] text-xs mb-1">{tSim.interets}</p>
                 <p
-                  className="text-[#00C896] font-bold"
-                  style={{ fontFamily: "var(--font-barlow-condensed)" }}
+                  className="text-[#2E80CE] font-bold"
+                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
                 >
                   {formatEur(pinnedData.interets)}
                 </p>
               </div>
               <div>
-                <p className="text-[#6B7280] text-xs mb-1">{tSim.total}</p>
+                <p className="text-[#1E3A5F] text-xs mb-1">{tSim.total}</p>
                 <p
-                  className="text-[#F9F9F9] text-lg font-bold"
-                  style={{ fontFamily: "var(--font-barlow-condensed)" }}
+                  className="text-[#0C2248] text-lg font-bold"
+                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
                 >
                   {formatEur(pinnedData.verse + pinnedData.interets)}
                 </p>
               </div>
               {showB && pinnedDataB && (
                 <div>
-                  <p className="text-[#6B7280] text-xs mb-1">{tSim.totalB}</p>
+                  <p className="text-[#1E3A5F] text-xs mb-1">{tSim.totalB}</p>
                   <p
                     className="text-[#F59E0B] text-lg font-bold"
-                    style={{ fontFamily: "var(--font-barlow-condensed)" }}
+                    style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
                   >
                     {formatEur(pinnedDataB.verse + pinnedDataB.interets)}
                   </p>

@@ -8,20 +8,20 @@ export default function CTA() {
   const t = useT();
 
   return (
-    <section id="cta" className="py-24 px-4 sm:px-6">
+    <section id="cta" className="py-24 px-4 sm:px-6 bg-[#0C2248]">
       <div className="max-w-2xl mx-auto text-center">
-        <p className="text-[#059669] text-sm font-semibold uppercase tracking-widest mb-4">
+        <p className="text-[#2E80CE] text-sm font-semibold uppercase tracking-widest mb-4">
           {t.cta.label}
         </p>
         <h2
-          className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase text-[#F9F9F9] leading-tight mb-4"
-          style={{ fontFamily: "var(--font-barlow-condensed)" }}
+          className="text-4xl sm:text-5xl md:text-6xl font-black uppercase text-[#F0F7FF] leading-tight mb-4"
+          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
         >
           {t.cta.heading1}
           <br />
-          <span className="text-[#059669]">{t.cta.heading2}</span>
+          <span className="text-[#2E80CE]">{t.cta.heading2}</span>
         </h2>
-        <p className="text-[#6B7280] mb-10 text-base">
+        <p className="text-[#F0F7FF]/60 mb-10 text-base">
           {t.cta.subtitle}
         </p>
 
@@ -34,17 +34,17 @@ export default function CTA() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t.cta.placeholder}
-            className="flex-1 bg-[#1F2937] border border-[#374151] text-[#F9F9F9] placeholder-[#6B7280] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#059669] transition-colors"
+            className="flex-1 bg-[#1E3A5F] border border-[#2E80CE]/30 text-[#F0F7FF] placeholder-[#F0F7FF]/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#2E80CE] transition-colors"
           />
           <button
             type="submit"
-            className="bg-[#059669] hover:bg-[#047857] text-white font-semibold px-6 py-3 rounded-lg text-sm transition-colors whitespace-nowrap"
+            className="bg-[#2E80CE] hover:bg-[#1E3A5F] text-white font-semibold px-6 py-3 rounded-lg text-sm transition-colors whitespace-nowrap border border-[#2E80CE]"
           >
             {t.cta.submit}
           </button>
         </form>
 
-        <p className="text-[#6B7280] text-xs mt-4">
+        <p className="text-[#F0F7FF]/40 text-xs mt-4">
           {t.cta.fine}
         </p>
       </div>

@@ -27,7 +27,7 @@ export default function ActifPage({ params }: { params: { slug: string } }) {
   if (!actif) notFound();
 
   return (
-    <main className="min-h-screen bg-[#111827]">
+    <main className="min-h-screen bg-[#F0F7FF]">
       <Navbar />
       <FicheActif actif={actif} />
       <Footer />

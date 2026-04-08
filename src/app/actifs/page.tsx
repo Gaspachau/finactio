@@ -14,7 +14,7 @@ export default function ActifsPage() {
   const actifs = getAllActifs();
 
   return (
-    <main className="min-h-screen bg-[#111827]">
+    <main className="min-h-screen bg-[#F0F7FF]">
       <Navbar />
       <ActifsPageContent actifs={actifs} />
       <Footer />
