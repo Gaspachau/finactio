@@ -66,11 +66,46 @@ export async function GET(req: NextRequest) {
       const base = staticMap.get(ticker);
       if (!base) continue;
 
+      const rawCap = q?.marketCap as number | undefined;
+      const rawPrice = q?.regularMarketPrice as number | undefined;
+
+      // ── Capitalisation ────────────────────────────────────────────────────────
+      // .PA  → Yahoo: EUR  → rawCap / 1e9 → Mds€
+      // US   → Yahoo: USD  → rawCap / 1e9 → Mds$
+      // .T   → Yahoo: JPY  → rawCap / 1e9 / 150 → Mds$ (USD equiv)
+      // .L   → Yahoo: USD  (marketCap normalisé en USD malgré currency=GBp)
+      //              → rawCap / 1e9 → Mds$
       let capMds = base.capMds;
-      if (q?.marketCap && typeof q.marketCap === "number" && q.marketCap > 0) {
-        capMds = ticker.endsWith(".T")
-          ? Math.round((q.marketCap as number) / 1e9 / 150)
-          : Math.round((q.marketCap as number) / 1e9);
+      let currency = base.currency;
+
+      if (rawCap && rawCap > 0) {
+        if (ticker.endsWith(".T")) {
+          capMds = Math.round(rawCap / 1e9 / 150);
+          currency = "$";
+        } else {
+          capMds = Math.round(rawCap / 1e9);
+          currency = ticker.endsWith(".PA") ? "€" : "$";
+        }
+      }
+
+      // ── Prix ──────────────────────────────────────────────────────────────────
+      // .L  → Yahoo: regularMarketPrice en GBp (pence) → divise par 100 pour £
+      // .T  → Yahoo: regularMarketPrice en JPY → affiche tel quel en ¥
+      // .PA → EUR, US → USD : affiche tel quel
+      let prix: number | null = null;
+      let prixDevise: string = currency;
+
+      if (rawPrice != null && rawPrice > 0) {
+        if (ticker.endsWith(".L")) {
+          prix = Math.round((rawPrice / 100) * 100) / 100;
+          prixDevise = "£";
+        } else if (ticker.endsWith(".T")) {
+          prix = Math.round(rawPrice);
+          prixDevise = "¥";
+        } else {
+          prix = Math.round(rawPrice * 100) / 100;
+          prixDevise = currency;
+        }
       }
 
       const variation =
@@ -78,7 +113,7 @@ export async function GET(req: NextRequest) {
           ? Math.round((q.regularMarketChangePercent as number) * 100) / 100
           : base.variation;
 
-      rows.push({ ...base, capMds, variation });
+      rows.push({ ...base, capMds, variation, currency, prix, prixDevise });
     }
 
     return rows

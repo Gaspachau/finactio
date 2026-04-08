@@ -14,6 +14,8 @@ export interface StockRow {
   variation: number | null;
   currency: string;
   slug: string;
+  prix?: number | null;
+  prixDevise?: string;
 }
 
 export interface IndiceData {
@@ -123,8 +125,8 @@ function IndiceSection({ indice, defaultOpen }: { indice: IndiceData; defaultOpe
           ) : (
             <>
               {/* En-têtes — desktop uniquement */}
-              <div className="hidden sm:grid grid-cols-[2.5rem_1fr_5.5rem_10rem_8rem_6rem_6rem] gap-x-3 px-7 py-2.5 bg-[#F0F7FF] border-b border-[#DDEAFF]">
-                {["#", "Entreprise", "Ticker", "Secteur", "Cap. (Mds)", "Variation", ""].map((h) => (
+              <div className="hidden sm:grid grid-cols-[2.5rem_1fr_5.5rem_6.5rem_10rem_8rem_6rem_6rem] gap-x-3 px-7 py-2.5 bg-[#F0F7FF] border-b border-[#DDEAFF]">
+                {["#", "Entreprise", "Ticker", "Prix", "Secteur", "Cap. (Mds)", "Variation", ""].map((h) => (
                   <span key={h} className="text-[#1E3A5F]/40 text-xs uppercase tracking-widest font-semibold">{h}</span>
                 ))}
               </div>
@@ -132,7 +134,7 @@ function IndiceSection({ indice, defaultOpen }: { indice: IndiceData; defaultOpe
               {indice.stocks.map((s, i) => (
                 <div
                   key={s.ticker}
-                  className={`grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[2.5rem_1fr_5.5rem_10rem_8rem_6rem_6rem] gap-x-3 items-center px-5 sm:px-7 py-3.5 border-b border-[#DDEAFF] last:border-0 transition-colors hover:bg-[#EBF3FF]/60 ${
+                  className={`grid grid-cols-[2.5rem_1fr_auto] sm:grid-cols-[2.5rem_1fr_5.5rem_6.5rem_10rem_8rem_6rem_6rem] gap-x-3 items-center px-5 sm:px-7 py-3.5 border-b border-[#DDEAFF] last:border-0 transition-colors hover:bg-[#EBF3FF]/60 ${
                     i % 2 === 0 ? "bg-white" : "bg-[#F0F7FF]/50"
                   }`}
                 >
@@ -143,12 +145,19 @@ function IndiceSection({ indice, defaultOpen }: { indice: IndiceData; defaultOpe
                   <div className="min-w-0">
                     <span className="text-[#0C2248] font-semibold text-sm block truncate">{s.nom}</span>
                     <span className="text-[#1E3A5F]/50 text-xs sm:hidden">
-                      {s.ticker} · {s.capMds > 0 ? `${s.capMds} Mds${s.currency}` : "—"}
+                      {s.ticker}
+                      {s.prix != null ? ` · ${s.prix.toFixed(2)} ${s.prixDevise ?? s.currency}` : ""}
+                      {" · "}{s.capMds > 0 ? `${s.capMds.toLocaleString("fr-FR")} Mds${s.currency}` : "—"}
                     </span>
                   </div>
 
                   {/* Ticker — desktop */}
                   <span className="hidden sm:block text-[#1E3A5F]/50 text-xs font-mono truncate">{s.ticker}</span>
+
+                  {/* Prix — desktop */}
+                  <span className="hidden sm:block text-[#0C2248] text-sm tabular-nums">
+                    {s.prix != null ? `${s.prix.toFixed(2)} ${s.prixDevise ?? s.currency}` : "—"}
+                  </span>
 
                   {/* Secteur — desktop */}
                   <div className="hidden sm:flex">
