@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/refresh-marches?secret=finactio_cron_2026",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
