@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Tous les grands indices mondiaux classés par capitalisation : CAC 40, S&P 500, NASDAQ, Nikkei, FTSE 100.",
 };
 
+// Rendu serveur à chaque requête — les données FMP ne sont pas disponibles au build
+export const dynamic = "force-dynamic";
+
 // ─── Symboles par indice ──────────────────────────────────────────────────────
 
 const CAC40_SYMBOLS   = ["MC.PA","RMS.PA","OR.PA","TTE.PA","SAN.PA","AIR.PA","SU.PA","SAF.PA","BNP.PA","AI.PA"];
