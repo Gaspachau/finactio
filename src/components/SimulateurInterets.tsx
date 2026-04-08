@@ -151,8 +151,8 @@ function ButtonSelect({
             onClick={() => selectPreset(p)}
             className={`py-2.5 px-1 rounded-xl text-sm font-semibold border transition-all ${
               activePreset === p
-                ? "bg-[#1E3A5F] border-[#1E3A5F] text-white shadow-[0_0_12px_rgba(46,128,206,0.25)]"
-                : "bg-[#F0F7FF] border-[#BDD3F0] text-[#1E3A5F] hover:border-[#2E80CE]/50 hover:text-[#0C2248]"
+                ? "bg-[#1E3A5F] border-[#1E3A5F] text-white shadow-[0_2px_8px_rgba(30,58,95,0.25)]"
+                : "bg-white border-[#DDEAFF] text-[#1E3A5F] hover:border-[#2E80CE]/50 hover:text-[#0C2248]"
             }`}
           >
             {fmtPreset(p)}
@@ -413,7 +413,8 @@ export default function SimulateurInterets() {
   return (
     <div className="space-y-6">
       {/* ── Contrôles ── */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 space-y-8 border border-[#DDEAFF]">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-8 border border-[#DDEAFF]"
+        style={{ boxShadow: "0 8px 32px rgba(14,52,120,0.08)" }}>
         {/* Capital + Versement (boutons) */}
         <div className="space-y-6">
           <ButtonSelect
@@ -460,7 +461,16 @@ export default function SimulateurInterets() {
           className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fade-up"
         >
           {/* Capital final */}
-          <div className="col-span-2 sm:col-span-1 bg-[#1E3A5F]/5 border border-[#2E80CE]/30 rounded-2xl px-5 py-6 text-center">
+          <div
+            className="col-span-2 sm:col-span-1 relative bg-white border border-[#DDEAFF] rounded-2xl px-5 py-6 text-center overflow-hidden"
+            style={{
+              borderLeft: "3px solid #2E80CE",
+              boxShadow: "0 4px 16px rgba(14,52,120,0.07)",
+            }}
+          >
+            <svg className="absolute top-3 right-3 w-4 h-4 text-[#2E80CE]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
             <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.capitalFinal}
             </p>
@@ -476,7 +486,13 @@ export default function SimulateurInterets() {
           </div>
 
           {/* Total versé */}
-          <div className="bg-[#F0F7FF] rounded-2xl px-5 py-6 text-center">
+          <div
+            className="relative bg-white border border-[#DDEAFF] rounded-2xl px-5 py-6 text-center"
+            style={{ boxShadow: "0 4px 16px rgba(14,52,120,0.05)" }}
+          >
+            <svg className="absolute top-3 right-3 w-4 h-4 text-[#1E3A5F]/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
             <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.totalVerse}
             </p>
@@ -490,7 +506,13 @@ export default function SimulateurInterets() {
           </div>
 
           {/* Intérêts */}
-          <div className="bg-[#F0F7FF] rounded-2xl px-5 py-6 text-center">
+          <div
+            className="relative bg-white border border-[#DDEAFF] rounded-2xl px-5 py-6 text-center"
+            style={{ boxShadow: "0 4px 16px rgba(14,52,120,0.05)" }}
+          >
+            <svg className="absolute top-3 right-3 w-4 h-4 text-[#1E3A5F]/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.interetsGeneres}
             </p>
@@ -504,7 +526,13 @@ export default function SimulateurInterets() {
           </div>
 
           {/* Multiplicateur */}
-          <div className="bg-[#F0F7FF] rounded-2xl px-5 py-6 text-center">
+          <div
+            className="relative bg-white border border-[#DDEAFF] rounded-2xl px-5 py-6 text-center"
+            style={{ boxShadow: "0 4px 16px rgba(14,52,120,0.05)" }}
+          >
+            <svg className="absolute top-3 right-3 w-4 h-4 text-[#1E3A5F]/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.5 12.75l7.5-7.5 7.5 7.5m-15 6l7.5-7.5 7.5 7.5" />
+            </svg>
             <p className="text-[#1E3A5F] text-xs uppercase tracking-widest mb-2">
               {tSim.multiplicateur}
             </p>
@@ -520,14 +548,14 @@ export default function SimulateurInterets() {
 
         {/* ── Insights ── */}
         {insights.length > 0 && (
-          <div className="space-y-2">
+          <div className="rounded-2xl bg-[#1E3A5F] px-6 py-5 space-y-3">
+            <p className="text-white/50 text-xs uppercase tracking-widest font-semibold mb-1">
+              Analyse
+            </p>
             {insights.map((text, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-3 bg-[#F0F7FF] rounded-xl px-4 py-3 border border-[#DDEAFF]"
-              >
-                <span className="text-[#2E80CE] mt-0.5 shrink-0">💡</span>
-                <p className="text-[#1E3A5F] text-sm leading-relaxed">{text}</p>
+              <div key={i} className="flex items-start gap-3">
+                <span className="text-[#2E80CE] mt-0.5 shrink-0 text-base">💡</span>
+                <p className="text-white/90 text-sm leading-relaxed">{text}</p>
               </div>
             ))}
           </div>
@@ -535,7 +563,8 @@ export default function SimulateurInterets() {
       </div>
 
       {/* ── Scénario B ── */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DDEAFF]">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DDEAFF]"
+        style={{ boxShadow: "0 8px 32px rgba(14,52,120,0.08)" }}>
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-[#0C2248] font-semibold text-sm">
@@ -604,7 +633,8 @@ export default function SimulateurInterets() {
       </div>
 
       {/* ── Graphique ── */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DDEAFF]">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#DDEAFF]"
+        style={{ boxShadow: "0 8px 32px rgba(14,52,120,0.08)" }}>
         <div className="flex items-center justify-between mb-4">
           <p
             className="text-[#0C2248] font-bold uppercase text-lg"
