@@ -13,6 +13,7 @@ export default function Navbar() {
     { label: t.nav.simulateurs, href: "/simulateurs" },
     { label: t.nav.fichesActifs, href: "/actifs" },
     { label: t.nav.glossaire, href: "/glossaire" },
+    { label: t.nav.decouvrir, href: "/decouvrir" },
   ];
 
   return (

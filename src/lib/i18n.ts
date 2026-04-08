@@ -14,6 +14,7 @@ export interface Translation {
     simulateurs: string;
     fichesActifs: string;
     glossaire: string;
+    decouvrir: string;
     commencer: string;
   };
   // ── Footer ──
@@ -170,6 +171,7 @@ const fr: Translation = {
     simulateurs: "Simulateurs",
     fichesActifs: "Fiches actifs",
     glossaire: "Glossaire",
+    decouvrir: "Découvrir",
     commencer: "Commencer",
   },
   footer: {
@@ -477,6 +479,7 @@ const en: Translation = {
     simulateurs: "Simulators",
     fichesActifs: "Asset Cards",
     glossaire: "Glossary",
+    decouvrir: "Compare",
     commencer: "Get started",
   },
   footer: {
