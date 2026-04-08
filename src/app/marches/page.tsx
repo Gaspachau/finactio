@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MarchesClient, { type IndiceData } from "./MarchesClient";
@@ -11,20 +10,41 @@ export const metadata: Metadata = {
   description: "Tous les grands indices mondiaux classés par capitalisation : CAC 40, S&P 500, NASDAQ, Nikkei, FTSE 100.",
 };
 
-// ─── Lecture du fichier JSON (mis à jour par le cron) ─────────────────────────
+// Revalide toutes les heures — la page est mise en cache entre les requêtes
+export const revalidate = 3600;
 
-interface MarchesJson {
-  updatedAt: string;
-  source: "fmp" | "static";
+// ─── Lecture depuis Supabase ───────────────────────────────────────────────────
+
+interface MarchesCache {
+  source: "yahoo" | "static";
   indices: IndiceData[];
 }
 
-function loadMarches(): { indices: IndiceData[]; updatedAt: string | null; fromCache: boolean } {
+async function loadMarches(): Promise<{
+  indices: IndiceData[];
+  updatedAt: string | null;
+  fromCache: boolean;
+}> {
   try {
-    const filePath = path.join(process.cwd(), "public", "data", "marches.json");
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const data: MarchesJson = JSON.parse(raw);
-    return { indices: data.indices, updatedAt: data.updatedAt, fromCache: true };
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const { data: row, error } = await supabase
+      .from("marches_cache")
+      .select("data, updated_at")
+      .eq("id", 1)
+      .single();
+
+    if (error || !row?.data) throw new Error(error?.message ?? "empty");
+
+    const cache = row.data as MarchesCache;
+    return {
+      indices: cache.indices ?? STATIC_INDICES,
+      updatedAt: row.updated_at as string,
+      fromCache: true,
+    };
   } catch {
     return { indices: STATIC_INDICES, updatedAt: null, fromCache: false };
   }
@@ -43,8 +63,8 @@ function formatUpdatedAt(iso: string): string {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function MarchesPage() {
-  const { indices, updatedAt, fromCache } = loadMarches();
+export default async function MarchesPage() {
+  const { indices, updatedAt, fromCache } = await loadMarches();
 
   return (
     <main
