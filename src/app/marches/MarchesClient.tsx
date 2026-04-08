@@ -220,7 +220,7 @@ function IndiceSection({ indice, defaultOpen }: { indice: IndiceData; defaultOpe
                     {/* Voir */}
                     <div className="flex justify-end">
                       <Link
-                        href={`/actifs/${s.slug}`}
+                        href={`/marches/${encodeURIComponent(s.ticker)}`}
                         className="inline-flex items-center gap-1 text-[#2E80CE] text-xs font-semibold transition-colors hover:text-[#0C2248] group/lnk"
                       >
                         <span>Voir</span>
@@ -257,7 +257,7 @@ function IndiceSection({ indice, defaultOpen }: { indice: IndiceData; defaultOpe
 
                     {/* Voir */}
                     <div className="flex justify-end">
-                      <Link href={`/actifs/${s.slug}`}
+                      <Link href={`/marches/${encodeURIComponent(s.ticker)}`}
                         className="text-[#2E80CE] group/lnk">
                         <svg className="w-4 h-4 transition-transform duration-150 group-hover/lnk:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
