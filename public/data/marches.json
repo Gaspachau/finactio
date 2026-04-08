@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-04-08T00:00:00.000Z",
-  "source": "static",
+  "updatedAt": "2026-04-08T20:46:15.534Z",
+  "source": "yahoo",
   "indices": [
     {
       "id": "cac40",
@@ -10,16 +10,106 @@
       "region": "europe",
       "description": "Les 40 plus grandes capitalisations cotées sur Euronext Paris.",
       "stocks": [
-        { "rang": 1,  "nom": "LVMH",               "ticker": "MC.PA",  "secteur": "Luxe",          "capMds": 312, "variation":  0.8,  "currency": "€", "slug": "lvmh" },
-        { "rang": 2,  "nom": "TotalEnergies",       "ticker": "TTE.PA", "secteur": "Énergie",       "capMds": 145, "variation": -0.3,  "currency": "€", "slug": "totalenergies" },
-        { "rang": 3,  "nom": "Hermès",              "ticker": "RMS.PA", "secteur": "Luxe",          "capMds": 198, "variation":  1.2,  "currency": "€", "slug": "hermes" },
-        { "rang": 4,  "nom": "Schneider Electric",  "ticker": "SU.PA",  "secteur": "Industrie",     "capMds": 112, "variation":  0.5,  "currency": "€", "slug": "schneider-electric" },
-        { "rang": 5,  "nom": "Sanofi",              "ticker": "SAN.PA", "secteur": "Santé",         "capMds": 108, "variation": -0.1,  "currency": "€", "slug": "sanofi" },
-        { "rang": 6,  "nom": "L'Oréal",             "ticker": "OR.PA",  "secteur": "Consommation",  "capMds": 195, "variation":  0.6,  "currency": "€", "slug": "loreal" },
-        { "rang": 7,  "nom": "Airbus",              "ticker": "AIR.PA", "secteur": "Aéronautique",  "capMds":  98, "variation":  1.8,  "currency": "€", "slug": "airbus" },
-        { "rang": 8,  "nom": "BNP Paribas",         "ticker": "BNP.PA", "secteur": "Finance",       "capMds":  72, "variation": -0.4,  "currency": "€", "slug": "bnp-paribas" },
-        { "rang": 9,  "nom": "Safran",              "ticker": "SAF.PA", "secteur": "Aéronautique",  "capMds":  68, "variation":  0.9,  "currency": "€", "slug": "safran" },
-        { "rang": 10, "nom": "Air Liquide",         "ticker": "AI.PA",  "secteur": "Chimie",        "capMds":  78, "variation":  0.2,  "currency": "€", "slug": "air-liquide" }
+        {
+          "rang": 1,
+          "nom": "LVMH",
+          "ticker": "MC.PA",
+          "secteur": "Luxe",
+          "capMds": 247,
+          "variation": 6.85,
+          "currency": "€",
+          "slug": "lvmh"
+        },
+        {
+          "rang": 2,
+          "nom": "L'Oréal",
+          "ticker": "OR.PA",
+          "secteur": "Consommation",
+          "capMds": 196,
+          "variation": 4.56,
+          "currency": "€",
+          "slug": "loreal"
+        },
+        {
+          "rang": 3,
+          "nom": "Hermès",
+          "ticker": "RMS.PA",
+          "secteur": "Luxe",
+          "capMds": 185,
+          "variation": 7.25,
+          "currency": "€",
+          "slug": "hermes"
+        },
+        {
+          "rang": 4,
+          "nom": "TotalEnergies",
+          "ticker": "TTE.PA",
+          "secteur": "Énergie",
+          "capMds": 164,
+          "variation": -3.09,
+          "currency": "€",
+          "slug": "totalenergies"
+        },
+        {
+          "rang": 5,
+          "nom": "Schneider Electric",
+          "ticker": "SU.PA",
+          "secteur": "Industrie",
+          "capMds": 144,
+          "variation": 9.73,
+          "currency": "€",
+          "slug": "schneider-electric"
+        },
+        {
+          "rang": 6,
+          "nom": "Airbus",
+          "ticker": "AIR.PA",
+          "secteur": "Aéronautique",
+          "capMds": 138,
+          "variation": 7.77,
+          "currency": "€",
+          "slug": "airbus"
+        },
+        {
+          "rang": 7,
+          "nom": "Safran",
+          "ticker": "SAF.PA",
+          "secteur": "Aéronautique",
+          "capMds": 130,
+          "variation": 10.64,
+          "currency": "€",
+          "slug": "safran"
+        },
+        {
+          "rang": 8,
+          "nom": "Air Liquide",
+          "ticker": "AI.PA",
+          "secteur": "Chimie",
+          "capMds": 106,
+          "variation": 1.07,
+          "currency": "€",
+          "slug": "air-liquide"
+        },
+        {
+          "rang": 9,
+          "nom": "BNP Paribas",
+          "ticker": "BNP.PA",
+          "secteur": "Finance",
+          "capMds": 99,
+          "variation": 7.48,
+          "currency": "€",
+          "slug": "bnp-paribas"
+        },
+        {
+          "rang": 10,
+          "nom": "Sanofi",
+          "ticker": "SAN.PA",
+          "secteur": "Santé",
+          "capMds": 97,
+          "variation": 0.45,
+          "currency": "€",
+          "slug": "sanofi"
+        }
       ]
     },
     {
@@ -30,16 +120,106 @@
       "region": "usa",
       "description": "Les 500 plus grandes entreprises américaines cotées en Bourse.",
       "stocks": [
-        { "rang": 1,  "nom": "Apple",              "ticker": "AAPL",  "secteur": "Technologie",      "capMds": 3100, "variation":  1.2,  "currency": "$", "slug": "apple" },
-        { "rang": 2,  "nom": "Microsoft",          "ticker": "MSFT",  "secteur": "Technologie",      "capMds": 2900, "variation":  0.8,  "currency": "$", "slug": "microsoft" },
-        { "rang": 3,  "nom": "Nvidia",             "ticker": "NVDA",  "secteur": "Semi-conducteurs", "capMds": 2600, "variation":  2.1,  "currency": "$", "slug": "nvidia" },
-        { "rang": 4,  "nom": "Amazon",             "ticker": "AMZN",  "secteur": "E-commerce",       "capMds": 2100, "variation":  0.5,  "currency": "$", "slug": "amazon" },
-        { "rang": 5,  "nom": "Alphabet",           "ticker": "GOOGL", "secteur": "Technologie",      "capMds": 1950, "variation":  0.3,  "currency": "$", "slug": "alphabet" },
-        { "rang": 6,  "nom": "Meta",               "ticker": "META",  "secteur": "Réseaux sociaux",  "capMds": 1400, "variation":  1.5,  "currency": "$", "slug": "meta" },
-        { "rang": 7,  "nom": "Berkshire Hathaway", "ticker": "BRK-B", "secteur": "Finance",          "capMds": 1050, "variation": -0.1,  "currency": "$", "slug": "berkshire-hathaway" },
-        { "rang": 8,  "nom": "Eli Lilly",          "ticker": "LLY",   "secteur": "Santé",            "capMds":  780, "variation":  0.7,  "currency": "$", "slug": "eli-lilly" },
-        { "rang": 9,  "nom": "Tesla",              "ticker": "TSLA",  "secteur": "Automobile",       "capMds":  720, "variation":  3.2,  "currency": "$", "slug": "tesla" },
-        { "rang": 10, "nom": "Broadcom",           "ticker": "AVGO",  "secteur": "Semi-conducteurs", "capMds":  680, "variation":  1.1,  "currency": "$", "slug": "broadcom" }
+        {
+          "rang": 1,
+          "nom": "Nvidia",
+          "ticker": "NVDA",
+          "secteur": "Semi-conducteurs",
+          "capMds": 4425,
+          "variation": 2.23,
+          "currency": "$",
+          "slug": "nvidia"
+        },
+        {
+          "rang": 2,
+          "nom": "Alphabet",
+          "ticker": "GOOGL",
+          "secteur": "Technologie",
+          "capMds": 3839,
+          "variation": 3.88,
+          "currency": "$",
+          "slug": "alphabet"
+        },
+        {
+          "rang": 3,
+          "nom": "Apple",
+          "ticker": "AAPL",
+          "secteur": "Technologie",
+          "capMds": 3805,
+          "variation": 2.13,
+          "currency": "$",
+          "slug": "apple"
+        },
+        {
+          "rang": 4,
+          "nom": "Microsoft",
+          "ticker": "MSFT",
+          "secteur": "Technologie",
+          "capMds": 2782,
+          "variation": 0.55,
+          "currency": "$",
+          "slug": "microsoft"
+        },
+        {
+          "rang": 5,
+          "nom": "Amazon",
+          "ticker": "AMZN",
+          "secteur": "E-commerce",
+          "capMds": 2375,
+          "variation": 3.5,
+          "currency": "$",
+          "slug": "amazon"
+        },
+        {
+          "rang": 6,
+          "nom": "Broadcom",
+          "ticker": "AVGO",
+          "secteur": "Semi-conducteurs",
+          "capMds": 1662,
+          "variation": 4.99,
+          "currency": "$",
+          "slug": "broadcom"
+        },
+        {
+          "rang": 7,
+          "nom": "Meta",
+          "ticker": "META",
+          "secteur": "Réseaux sociaux",
+          "capMds": 1549,
+          "variation": 6.5,
+          "currency": "$",
+          "slug": "meta"
+        },
+        {
+          "rang": 8,
+          "nom": "Tesla",
+          "ticker": "TSLA",
+          "secteur": "Automobile",
+          "capMds": 1288,
+          "variation": -0.98,
+          "currency": "$",
+          "slug": "tesla"
+        },
+        {
+          "rang": 9,
+          "nom": "Berkshire Hathaway",
+          "ticker": "BRK-B",
+          "secteur": "Finance",
+          "capMds": 1035,
+          "variation": 0.35,
+          "currency": "$",
+          "slug": "berkshire-hathaway"
+        },
+        {
+          "rang": 10,
+          "nom": "Eli Lilly",
+          "ticker": "LLY",
+          "secteur": "Santé",
+          "capMds": 853,
+          "variation": 2.39,
+          "currency": "$",
+          "slug": "eli-lilly"
+        }
       ]
     },
     {
@@ -50,16 +230,106 @@
       "region": "usa",
       "description": "Les plus grandes valeurs technologiques cotées au NASDAQ.",
       "stocks": [
-        { "rang": 1,  "nom": "Apple",     "ticker": "AAPL",  "secteur": "Technologie",      "capMds": 3100, "variation":  1.2,  "currency": "$", "slug": "apple" },
-        { "rang": 2,  "nom": "Microsoft", "ticker": "MSFT",  "secteur": "Technologie",      "capMds": 2900, "variation":  0.8,  "currency": "$", "slug": "microsoft" },
-        { "rang": 3,  "nom": "Nvidia",    "ticker": "NVDA",  "secteur": "Semi-conducteurs", "capMds": 2600, "variation":  2.1,  "currency": "$", "slug": "nvidia" },
-        { "rang": 4,  "nom": "Amazon",    "ticker": "AMZN",  "secteur": "E-commerce",       "capMds": 2100, "variation":  0.5,  "currency": "$", "slug": "amazon" },
-        { "rang": 5,  "nom": "Meta",      "ticker": "META",  "secteur": "Réseaux sociaux",  "capMds": 1400, "variation":  1.5,  "currency": "$", "slug": "meta" },
-        { "rang": 6,  "nom": "Alphabet",  "ticker": "GOOGL", "secteur": "Technologie",      "capMds": 1950, "variation":  0.3,  "currency": "$", "slug": "alphabet" },
-        { "rang": 7,  "nom": "Tesla",     "ticker": "TSLA",  "secteur": "Automobile",       "capMds":  720, "variation":  3.2,  "currency": "$", "slug": "tesla" },
-        { "rang": 8,  "nom": "Broadcom",  "ticker": "AVGO",  "secteur": "Semi-conducteurs", "capMds":  680, "variation":  1.1,  "currency": "$", "slug": "broadcom" },
-        { "rang": 9,  "nom": "Costco",    "ticker": "COST",  "secteur": "Distribution",     "capMds":  420, "variation":  0.4,  "currency": "$", "slug": "costco" },
-        { "rang": 10, "nom": "Netflix",   "ticker": "NFLX",  "secteur": "Streaming",        "capMds":  380, "variation":  1.8,  "currency": "$", "slug": "netflix" }
+        {
+          "rang": 1,
+          "nom": "Nvidia",
+          "ticker": "NVDA",
+          "secteur": "Semi-conducteurs",
+          "capMds": 4425,
+          "variation": 2.23,
+          "currency": "$",
+          "slug": "nvidia"
+        },
+        {
+          "rang": 2,
+          "nom": "Alphabet",
+          "ticker": "GOOGL",
+          "secteur": "Technologie",
+          "capMds": 3839,
+          "variation": 3.88,
+          "currency": "$",
+          "slug": "alphabet"
+        },
+        {
+          "rang": 3,
+          "nom": "Apple",
+          "ticker": "AAPL",
+          "secteur": "Technologie",
+          "capMds": 3805,
+          "variation": 2.13,
+          "currency": "$",
+          "slug": "apple"
+        },
+        {
+          "rang": 4,
+          "nom": "Microsoft",
+          "ticker": "MSFT",
+          "secteur": "Technologie",
+          "capMds": 2782,
+          "variation": 0.55,
+          "currency": "$",
+          "slug": "microsoft"
+        },
+        {
+          "rang": 5,
+          "nom": "Amazon",
+          "ticker": "AMZN",
+          "secteur": "E-commerce",
+          "capMds": 2375,
+          "variation": 3.5,
+          "currency": "$",
+          "slug": "amazon"
+        },
+        {
+          "rang": 6,
+          "nom": "Broadcom",
+          "ticker": "AVGO",
+          "secteur": "Semi-conducteurs",
+          "capMds": 1662,
+          "variation": 4.99,
+          "currency": "$",
+          "slug": "broadcom"
+        },
+        {
+          "rang": 7,
+          "nom": "Meta",
+          "ticker": "META",
+          "secteur": "Réseaux sociaux",
+          "capMds": 1549,
+          "variation": 6.5,
+          "currency": "$",
+          "slug": "meta"
+        },
+        {
+          "rang": 8,
+          "nom": "Tesla",
+          "ticker": "TSLA",
+          "secteur": "Automobile",
+          "capMds": 1288,
+          "variation": -0.98,
+          "currency": "$",
+          "slug": "tesla"
+        },
+        {
+          "rang": 9,
+          "nom": "Costco",
+          "ticker": "COST",
+          "secteur": "Distribution",
+          "capMds": 457,
+          "variation": 1.68,
+          "currency": "$",
+          "slug": "costco"
+        },
+        {
+          "rang": 10,
+          "nom": "Netflix",
+          "ticker": "NFLX",
+          "secteur": "Streaming",
+          "capMds": 422,
+          "variation": 0.58,
+          "currency": "$",
+          "slug": "netflix"
+        }
       ]
     },
     {
@@ -70,16 +340,106 @@
       "region": "asie",
       "description": "Les 225 principales valeurs de la Bourse de Tokyo.",
       "stocks": [
-        { "rang": 1,  "nom": "Toyota",            "ticker": "7203.T",  "secteur": "Automobile",  "capMds": 280, "variation":  0.4,  "currency": "$", "slug": "toyota" },
-        { "rang": 2,  "nom": "Sony",              "ticker": "6758.T",  "secteur": "Électronique", "capMds": 110, "variation":  0.9,  "currency": "$", "slug": "sony" },
-        { "rang": 3,  "nom": "SoftBank",          "ticker": "9984.T",  "secteur": "Technologie",  "capMds":  98, "variation":  1.2,  "currency": "$", "slug": "softbank" },
-        { "rang": 4,  "nom": "Keyence",           "ticker": "6861.T",  "secteur": "Industrie",    "capMds":  92, "variation":  0.3,  "currency": "$", "slug": "keyence" },
-        { "rang": 5,  "nom": "Mitsubishi UFJ",    "ticker": "8306.T",  "secteur": "Finance",      "capMds":  95, "variation":  0.6,  "currency": "$", "slug": "mitsubishi-ufj" },
-        { "rang": 6,  "nom": "Recruit Holdings",  "ticker": "6098.T",  "secteur": "Services",     "capMds":  72, "variation":  0.7,  "currency": "$", "slug": "recruit-holdings" },
-        { "rang": 7,  "nom": "Fast Retailing",    "ticker": "9983.T",  "secteur": "Mode",         "capMds":  62, "variation":  1.4,  "currency": "$", "slug": "fast-retailing" },
-        { "rang": 8,  "nom": "Honda",             "ticker": "7267.T",  "secteur": "Automobile",   "capMds":  48, "variation": -0.2,  "currency": "$", "slug": "honda" },
-        { "rang": 9,  "nom": "Shin-Etsu Chemical","ticker": "4063.T",  "secteur": "Chimie",       "capMds":  45, "variation":  0.5,  "currency": "$", "slug": "shin-etsu-chemical" },
-        { "rang": 10, "nom": "Fanuc",             "ticker": "6954.T",  "secteur": "Robotique",    "capMds":  38, "variation": -0.1,  "currency": "$", "slug": "fanuc" }
+        {
+          "rang": 1,
+          "nom": "Toyota",
+          "ticker": "7203.T",
+          "secteur": "Automobile",
+          "capMds": 294,
+          "variation": 4.06,
+          "currency": "$",
+          "slug": "toyota"
+        },
+        {
+          "rang": 2,
+          "nom": "Mitsubishi UFJ",
+          "ticker": "8306.T",
+          "secteur": "Finance",
+          "capMds": 217,
+          "variation": 2.63,
+          "currency": "$",
+          "slug": "mitsubishi-ufj"
+        },
+        {
+          "rang": 3,
+          "nom": "SoftBank",
+          "ticker": "9984.T",
+          "secteur": "Technologie",
+          "capMds": 145,
+          "variation": 7.21,
+          "currency": "$",
+          "slug": "softbank"
+        },
+        {
+          "rang": 4,
+          "nom": "Fast Retailing",
+          "ticker": "9983.T",
+          "secteur": "Mode",
+          "capMds": 139,
+          "variation": 4.1,
+          "currency": "$",
+          "slug": "fast-retailing"
+        },
+        {
+          "rang": 5,
+          "nom": "Sony",
+          "ticker": "6758.T",
+          "secteur": "Électronique",
+          "capMds": 134,
+          "variation": 2.33,
+          "currency": "$",
+          "slug": "sony"
+        },
+        {
+          "rang": 6,
+          "nom": "Keyence",
+          "ticker": "6861.T",
+          "secteur": "Industrie",
+          "capMds": 98,
+          "variation": 3.83,
+          "currency": "$",
+          "slug": "keyence"
+        },
+        {
+          "rang": 7,
+          "nom": "Shin-Etsu Chemical",
+          "ticker": "4063.T",
+          "secteur": "Chimie",
+          "capMds": 80,
+          "variation": -1.58,
+          "currency": "$",
+          "slug": "shin-etsu-chemical"
+        },
+        {
+          "rang": 8,
+          "nom": "Recruit Holdings",
+          "ticker": "6098.T",
+          "secteur": "Services",
+          "capMds": 68,
+          "variation": 5.1,
+          "currency": "$",
+          "slug": "recruit-holdings"
+        },
+        {
+          "rang": 9,
+          "nom": "Fanuc",
+          "ticker": "6954.T",
+          "secteur": "Robotique",
+          "capMds": 37,
+          "variation": 7.63,
+          "currency": "$",
+          "slug": "fanuc"
+        },
+        {
+          "rang": 10,
+          "nom": "Honda",
+          "ticker": "7267.T",
+          "secteur": "Automobile",
+          "capMds": 33,
+          "variation": 2.52,
+          "currency": "$",
+          "slug": "honda"
+        }
       ]
     },
     {
@@ -90,16 +450,106 @@
       "region": "europe",
       "description": "Les 100 plus grandes capitalisations de la Bourse de Londres.",
       "stocks": [
-        { "rang": 1,  "nom": "AstraZeneca", "ticker": "AZN.L",  "secteur": "Santé",        "capMds": 210, "variation":  0.8,  "currency": "$", "slug": "astrazeneca" },
-        { "rang": 2,  "nom": "Shell",       "ticker": "SHEL.L", "secteur": "Énergie",      "capMds": 185, "variation": -0.3,  "currency": "$", "slug": "shell" },
-        { "rang": 3,  "nom": "HSBC",        "ticker": "HSBA.L", "secteur": "Finance",      "capMds": 145, "variation":  0.2,  "currency": "$", "slug": "hsbc" },
-        { "rang": 4,  "nom": "Rio Tinto",   "ticker": "RIO.L",  "secteur": "Mines",        "capMds":  95, "variation":  1.1,  "currency": "$", "slug": "rio-tinto" },
-        { "rang": 5,  "nom": "Unilever",    "ticker": "ULVR.L", "secteur": "Consommation", "capMds": 112, "variation":  0.4,  "currency": "$", "slug": "unilever" },
-        { "rang": 6,  "nom": "BHP",         "ticker": "BHP.L",  "secteur": "Mines",        "capMds":  82, "variation":  0.9,  "currency": "$", "slug": "bhp" },
-        { "rang": 7,  "nom": "BP",          "ticker": "BP.L",   "secteur": "Énergie",      "capMds":  88, "variation": -0.5,  "currency": "$", "slug": "bp" },
-        { "rang": 8,  "nom": "GSK",         "ticker": "GSK.L",  "secteur": "Santé",        "capMds":  78, "variation":  0.3,  "currency": "$", "slug": "gsk" },
-        { "rang": 9,  "nom": "Diageo",      "ticker": "DGE.L",  "secteur": "Boissons",     "capMds":  58, "variation": -0.2,  "currency": "$", "slug": "diageo" },
-        { "rang": 10, "nom": "Rolls-Royce", "ticker": "RR.L",   "secteur": "Aéronautique", "capMds":  48, "variation":  2.3,  "currency": "$", "slug": "rolls-royce" }
+        {
+          "rang": 1,
+          "nom": "AstraZeneca",
+          "ticker": "AZN.L",
+          "secteur": "Santé",
+          "capMds": 236,
+          "variation": 1.72,
+          "currency": "$",
+          "slug": "astrazeneca"
+        },
+        {
+          "rang": 2,
+          "nom": "HSBC",
+          "ticker": "HSBA.L",
+          "secteur": "Finance",
+          "capMds": 229,
+          "variation": 5.32,
+          "currency": "$",
+          "slug": "hsbc"
+        },
+        {
+          "rang": 3,
+          "nom": "Shell",
+          "ticker": "SHEL.L",
+          "secteur": "Énergie",
+          "capMds": 191,
+          "variation": -4.68,
+          "currency": "$",
+          "slug": "shell"
+        },
+        {
+          "rang": 4,
+          "nom": "BHP",
+          "ticker": "BHP.L",
+          "secteur": "Mines",
+          "capMds": 146,
+          "variation": 3.74,
+          "currency": "$",
+          "slug": "bhp"
+        },
+        {
+          "rang": 5,
+          "nom": "Rio Tinto",
+          "ticker": "RIO.L",
+          "secteur": "Mines",
+          "capMds": 119,
+          "variation": 2.99,
+          "currency": "$",
+          "slug": "rio-tinto"
+        },
+        {
+          "rang": 6,
+          "nom": "Rolls-Royce",
+          "ticker": "RR.L",
+          "secteur": "Aéronautique",
+          "capMds": 106,
+          "variation": 11.85,
+          "currency": "$",
+          "slug": "rolls-royce"
+        },
+        {
+          "rang": 7,
+          "nom": "Unilever",
+          "ticker": "ULVR.L",
+          "secteur": "Consommation",
+          "capMds": 94,
+          "variation": 2.61,
+          "currency": "$",
+          "slug": "unilever"
+        },
+        {
+          "rang": 8,
+          "nom": "BP",
+          "ticker": "BP.L",
+          "secteur": "Énergie",
+          "capMds": 87,
+          "variation": -5.82,
+          "currency": "$",
+          "slug": "bp"
+        },
+        {
+          "rang": 9,
+          "nom": "GSK",
+          "ticker": "GSK.L",
+          "secteur": "Santé",
+          "capMds": 85,
+          "variation": 1.38,
+          "currency": "$",
+          "slug": "gsk"
+        },
+        {
+          "rang": 10,
+          "nom": "Diageo",
+          "ticker": "DGE.L",
+          "secteur": "Boissons",
+          "capMds": 32,
+          "variation": 3.45,
+          "currency": "$",
+          "slug": "diageo"
+        }
       ]
     }
   ]
