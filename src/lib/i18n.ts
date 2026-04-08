@@ -13,6 +13,7 @@ export interface Translation {
   nav: {
     simulateurs: string;
     fichesActifs: string;
+    marches: string;
     glossaire: string;
     decouvrir: string;
     commencer: string;
@@ -170,6 +171,7 @@ const fr: Translation = {
   nav: {
     simulateurs: "Simulateurs",
     fichesActifs: "Fiches actifs",
+    marches: "Marchés",
     glossaire: "Glossaire",
     decouvrir: "Découvrir",
     commencer: "Commencer",
@@ -478,6 +480,7 @@ const en: Translation = {
   nav: {
     simulateurs: "Simulators",
     fichesActifs: "Asset Cards",
+    marches: "Markets",
     glossaire: "Glossary",
     decouvrir: "Compare",
     commencer: "Get started",
