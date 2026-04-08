@@ -27,6 +27,8 @@ export interface StockDetail {
   pays: string;
   drapeau: string;
   volume?: number | null;
+  dayHigh?: number | null;
+  dayLow?: number | null;
   high52w?: number | null;
   low52w?: number | null;
   previousClose?: number | null;
@@ -288,13 +290,15 @@ export default function StockDetailClient({
         </div>
 
         {/* ── Métriques ─────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <MetricCard label="Prix actuel"    value={fmtPrice(stock.prix)} />
           <MetricCard
             label="Variation jour"
             value={`${pos ? "+" : ""}${stock.variation.toFixed(2)}%`}
             sub={stock.previousClose != null ? `Clôture préc. ${fmtPrice(stock.previousClose)}` : undefined}
           />
+          <MetricCard label="Plus haut jour" value={fmtPrice(stock.dayHigh)} />
+          <MetricCard label="Plus bas jour"  value={fmtPrice(stock.dayLow)} />
           <MetricCard
             label="Capitalisation"
             value={stock.capMds > 0 ? `${stock.capMds.toLocaleString("fr-FR")} Mds${stock.currency}` : "—"}
