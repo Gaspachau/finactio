@@ -8,87 +8,142 @@ export const metadata: Metadata = {
   description: "Tous les grands indices mondiaux classés par capitalisation : CAC 40, S&P 500, NASDAQ, Nikkei, FTSE 100.",
 };
 
-// ─── Types FMP ────────────────────────────────────────────────────────────────
+// ─── Symboles par indice ──────────────────────────────────────────────────────
 
-interface FMPStock {
+const CAC40_SYMBOLS   = ["MC.PA","RMS.PA","OR.PA","TTE.PA","SAN.PA","AIR.PA","SU.PA","SAF.PA","BNP.PA","AI.PA"];
+const SP500_SYMBOLS   = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","BRK-B","LLY","TSLA","AVGO"];
+const NASDAQ_SYMBOLS  = ["AAPL","MSFT","NVDA","AMZN","META","GOOGL","TSLA","AVGO","COST","NFLX"];
+const NIKKEI_SYMBOLS  = ["7203.T","6758.T","9984.T","6861.T","8058.T","4063.T","6098.T","9983.T","7267.T","6954.T"];
+const FTSE100_SYMBOLS = ["AZN.L","HSBA.L","SHEL.L","BHP.L","RIO.L","ULVR.L","RR.L","BP.L","GSK.L","DGE.L"];
+
+// ─── Mapping secteurs / industries EN → FR ────────────────────────────────────
+
+const LABEL_FR: Record<string, string> = {
+  // Sectors
+  "Technology":                  "Technologie",
+  "Healthcare":                  "Santé",
+  "Energy":                      "Énergie",
+  "Financial Services":          "Finance",
+  "Financials":                  "Finance",
+  "Consumer Cyclical":           "Consommation",
+  "Consumer Defensive":          "Consommation",
+  "Industrials":                 "Industrie",
+  "Basic Materials":             "Matières premières",
+  "Materials":                   "Matières premières",
+  "Real Estate":                 "Immobilier",
+  "Communication Services":      "Télécom & Médias",
+  "Utilities":                   "Services publics",
+  // Industries
+  "Luxury Goods":                "Luxe",
+  "Specialty Chemicals":         "Chimie",
+  "Industrial Gases":            "Chimie",
+  "Aerospace & Defense":         "Aéronautique",
+  "Oil & Gas Integrated":        "Énergie",
+  "Oil & Gas Refining":          "Énergie",
+  "Drug Manufacturers":          "Santé",
+  "Drug Manufacturers - General":"Santé",
+  "Biotechnology":               "Santé",
+  "Pharmaceuticals":             "Santé",
+  "Banks":                       "Finance",
+  "Banks - Diversified":         "Finance",
+  "Insurance":                   "Finance",
+  "Diversified Industrials":     "Industrie",
+  "Electrical Equipment":        "Industrie",
+  "Semiconductor Equipment":     "Semi-conducteurs",
+  "Semiconductors":              "Semi-conducteurs",
+  "Consumer Electronics":        "Électronique",
+  "Software - Infrastructure":   "Technologie",
+  "Software - Application":      "Technologie",
+  "Internet Content & Information":"Technologie",
+  "Auto Manufacturers":          "Auto",
+  "Specialty Industrial Machinery":"Industrie",
+  "Staffing & Employment":       "Services",
+  "Apparel Retail":              "Mode",
+  "Apparel Manufacturing":       "Mode",
+  "Discount Stores":             "Distribution",
+  "Entertainment":               "Streaming",
+  "Telecom Services":            "Télécom & Médias",
+  "Diversified":                 "Conglomérat",
+  "Mining":                      "Mines",
+  "Copper":                      "Mines",
+  "Steel":                       "Mines",
+  "Beverages - Wines & Spirits": "Boissons",
+  "Household & Personal Products":"Consommation",
+};
+
+function mapLabel(industry: string | null, sector: string | null): string {
+  if (industry && LABEL_FR[industry]) return LABEL_FR[industry];
+  if (sector && LABEL_FR[sector]) return LABEL_FR[sector];
+  return industry ?? sector ?? "Divers";
+}
+
+// ─── Types FMP (stable/profile) ───────────────────────────────────────────────
+
+interface FMPProfile {
   symbol: string;
   companyName: string | null;
   marketCap: number | null;
+  currency: string | null;
+  changePercentage: number | null;
   sector: string | null;
-  changesPercentage?: number | null;
-}
-
-// ─── Mapping secteurs EN → FR ─────────────────────────────────────────────────
-
-const SECTOR_FR: Record<string, string> = {
-  "Technology":             "Technologie",
-  "Healthcare":             "Santé",
-  "Energy":                 "Énergie",
-  "Financial Services":     "Finance",
-  "Financials":             "Finance",
-  "Consumer Cyclical":      "Consommation",
-  "Consumer Defensive":     "Consommation",
-  "Consumer Goods":         "Consommation",
-  "Industrials":            "Industrie",
-  "Basic Materials":        "Matières premières",
-  "Materials":              "Matières premières",
-  "Real Estate":            "Immobilier",
-  "Communication Services": "Télécom & Médias",
-  "Utilities":              "Services publics",
-  "Aerospace & Defense":    "Aéronautique",
-  "Automotive":             "Auto",
-  "Semiconductors":         "Semi-conducteurs",
-};
-
-function mapSector(s: string | null): string {
-  if (!s) return "Divers";
-  return SECTOR_FR[s] ?? s;
+  industry: string | null;
 }
 
 // ─── Fetch ────────────────────────────────────────────────────────────────────
 
-async function fetchTopStocks(exchange: string, limit: number, currency: string): Promise<StockRow[]> {
+async function fetchProfile(symbol: string): Promise<FMPProfile | null> {
   const key = process.env.FMP_API_KEY;
-  if (!key) return [];
-
+  if (!key) return null;
   try {
     const res = await fetch(
-      `https://financialmodelingprep.com/api/v3/stock-screener?exchange=${exchange}&limit=${limit}&apikey=${key}`,
+      `https://financialmodelingprep.com/stable/profile?symbol=${symbol}&apikey=${key}`,
       { next: { revalidate: 3600 } }
     );
-    if (!res.ok) return [];
-
-    const raw: unknown = await res.json();
-    if (!Array.isArray(raw)) return [];
-
-    return (raw as FMPStock[])
-      .filter((s) => s.marketCap && s.marketCap > 0 && s.symbol && s.companyName)
-      .sort((a, b) => (b.marketCap ?? 0) - (a.marketCap ?? 0))
-      .slice(0, 10)
-      .map((s, i): StockRow => ({
-        rang: i + 1,
-        nom: s.companyName ?? s.symbol,
-        ticker: s.symbol,
-        secteur: mapSector(s.sector),
-        capMds: Math.round((s.marketCap ?? 0) / 1e9),
-        variation: s.changesPercentage ?? null,
-        currency,
-        slug: s.symbol.toLowerCase().replace(/[^a-z0-9]/g, "-"),
-      }));
+    if (!res.ok) return null;
+    const data: unknown = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+    return data[0] as FMPProfile;
   } catch {
-    return [];
+    return null;
   }
+}
+
+async function fetchIndex(
+  symbols: string[],
+  currency: string,
+  // capFactor: multiply raw marketCap before dividing by 1e9 (use 1/150 for JPY→USD)
+  capFactor: number = 1
+): Promise<StockRow[]> {
+  const profiles = await Promise.all(symbols.map(fetchProfile));
+
+  return profiles
+    .map((p, i): StockRow | null => {
+      if (!p || !p.marketCap) return null;
+      return {
+        rang: i + 1,
+        nom: p.companyName ?? p.symbol,
+        ticker: p.symbol,
+        secteur: mapLabel(p.industry, p.sector),
+        capMds: Math.round(p.marketCap * capFactor / 1e9),
+        variation: p.changePercentage ?? null,
+        currency,
+        slug: p.symbol.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+      };
+    })
+    .filter((r): r is StockRow => r !== null)
+    .sort((a, b) => b.capMds - a.capMds)
+    .map((r, i) => ({ ...r, rang: i + 1 }));
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function MarchesPage() {
-  const [euronext, nyse, nasdaq, jpx, lse] = await Promise.all([
-    fetchTopStocks("EURONEXT", 40, "€"),
-    fetchTopStocks("NYSE",     50, "$"),
-    fetchTopStocks("NASDAQ",   50, "$"),
-    fetchTopStocks("JPX",      30, "$"),
-    fetchTopStocks("LSE",      30, "$"),
+  const [cac40, sp500, nasdaq, nikkei, ftse100] = await Promise.all([
+    fetchIndex(CAC40_SYMBOLS,   "€"),          // EUR
+    fetchIndex(SP500_SYMBOLS,   "$"),          // USD
+    fetchIndex(NASDAQ_SYMBOLS,  "$"),          // USD
+    fetchIndex(NIKKEI_SYMBOLS,  "$", 1 / 150), // JPY → USD approx
+    fetchIndex(FTSE100_SYMBOLS, "$"),          // FMP retourne USD pour les stocks GBp
   ]);
 
   const indices: IndiceData[] = [
@@ -99,7 +154,7 @@ export default async function MarchesPage() {
       drapeau: "🇫🇷",
       region: "europe",
       description: "Les 40 plus grandes capitalisations cotées sur Euronext Paris.",
-      stocks: euronext,
+      stocks: cac40,
     },
     {
       id: "sp500",
@@ -108,7 +163,7 @@ export default async function MarchesPage() {
       drapeau: "🇺🇸",
       region: "usa",
       description: "Les 500 plus grandes entreprises américaines cotées en Bourse.",
-      stocks: nyse,
+      stocks: sp500,
     },
     {
       id: "nasdaq",
@@ -125,8 +180,8 @@ export default async function MarchesPage() {
       pays: "Japon",
       drapeau: "🇯🇵",
       region: "asie",
-      description: "Les 225 principales valeurs de la Bourse de Tokyo.",
-      stocks: jpx,
+      description: "Les 225 principales valeurs de la Bourse de Tokyo (TSE).",
+      stocks: nikkei,
     },
     {
       id: "ftse100",
@@ -135,7 +190,7 @@ export default async function MarchesPage() {
       drapeau: "🇬🇧",
       region: "europe",
       description: "Les 100 premières capitalisations du London Stock Exchange.",
-      stocks: lse,
+      stocks: ftse100,
     },
   ];
 
@@ -167,7 +222,7 @@ export default async function MarchesPage() {
             <span className="text-[#2E80CE]">mondiaux</span>
           </h1>
           <p className="text-[#1E3A5F] text-lg max-w-xl">
-            Tous les grands indices, classés par capitalisation. Données actualisées toutes les heures.
+            Données réelles via Financial Modeling Prep, actualisées toutes les heures.
           </p>
         </div>
       </section>
