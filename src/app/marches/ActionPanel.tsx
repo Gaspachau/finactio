@@ -136,14 +136,14 @@ export default function ActionPanel({
               <span style={{ fontSize: 30, lineHeight: 1, flexShrink: 0 }}>{drapeau}</span>
               {LOGO_MAP[s.ticker] && (
                 <img
-                  src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
-                  width={44} height={44}
+                  src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=96`}
+                  width={56} height={56}
                   style={{
-                    borderRadius: 10,
+                    borderRadius: 14,
                     objectFit: "contain",
                     flexShrink: 0,
                     background: "#fff",
-                    padding: 2,
+                    padding: 3,
                     border: "0.5px solid rgba(255,255,255,0.15)",
                   }}
                   onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}

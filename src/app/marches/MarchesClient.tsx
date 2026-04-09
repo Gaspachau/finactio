@@ -117,8 +117,8 @@ const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> =
   "STM.PA":  { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
   "EL.PA":   { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
   "RCO.PA":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
-  "BOL.PA":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
-  "GTT.PA":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "BOL.PA":  { label: "Logistique", bg: "#FAEEDA", color: "#633806" },
+  "GTT.PA":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
   // DAX 40 manquants
   "MRK.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
   "DB1.DE":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
@@ -177,6 +177,34 @@ const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> =
   "BMY":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
   "AMGN":    { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
   "PM":      { label: "Tabac",      bg: "#E8E4DF", color: "#4A3B2A" },
+  // FTSE MIB supplémentaires
+  "TRN.MI":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "MONC.MI": { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "G.MI":    { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "CNHI.MI": { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "PRY.MI":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  // IBEX 35 supplémentaires
+  "REE.MC":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "GAS.MC":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "ACS.MC":  { label: "BTP",        bg: "#E6F1FB", color: "#0C447C" },
+  "FER.MC":  { label: "BTP",        bg: "#E6F1FB", color: "#0C447C" },
+  "CLNX.MC": { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
+  // BEL 20 supplémentaires
+  "GBLB.BR": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "WDP.BR":  { label: "Immo",       bg: "#FAEEDA", color: "#633806" },
+  "GLPG.BR": { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  // AEX supplémentaires
+  "RAND.AS": { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
+  "WKL.AS":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  // FTSE 100 supplémentaires
+  "BATS.L":  { label: "Tabac",      bg: "#E8E4DF", color: "#4A3B2A" },
+  "GLEN.L":  { label: "Mines",      bg: "#FEF3E2", color: "#7C4B00" },
+  "NG.L":    { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "REL.L":   { label: "Média",      bg: "#FAECE7", color: "#712B13" },
+  "LLOY.L":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "BARC.L":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "VOD.L":   { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
+  "PRU.L":   { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
 };
 
 // ─── LOGO_MAP ticker → domaine Logo.dev ──────────────────────────────────────
@@ -224,6 +252,34 @@ export const LOGO_MAP: Record<string, string> = {
   "7203.T":  "toyota.com",         "6758.T":  "sony.com",            "9984.T":  "softbank.jp",
   "6861.T":  "keyence.com",        "7267.T":  "honda.com",           "4063.T":  "shinetsu.co.jp",
   "6954.T":  "fanuc.co.jp",        "9983.T":  "fastretailing.com",   "8306.T":  "mufg.jp",
+  // CAC 40 supplémentaires
+  "BOL.PA":  "bollore.com",        "GTT.PA":  "gtt.fr",              "MTX.PA":  "euronext.com",
+  "STLAP.PA":"stellantis.com",     "VIE.PA":  "veolia.com",
+  // FTSE MIB supplémentaires
+  "TRN.MI":  "terna.it",           "MONC.MI": "moncler.com",         "G.MI":    "generali.com",
+  "CNHI.MI": "cnhindustrial.com",  "PRY.MI":  "prysmian.com",
+  // IBEX 35 supplémentaires
+  "REE.MC":  "ree.es",             "GAS.MC":  "naturgy.com",         "ACS.MC":  "grupoacs.com",
+  "FER.MC":  "ferrovial.com",      "CLNX.MC": "cellnex.com",
+  // BEL 20 supplémentaires
+  "GBLB.BR": "gbl.be",             "WDP.BR":  "wdp.be",              "GLPG.BR": "galapagos.com",
+  // AEX supplémentaires
+  "RAND.AS": "randstad.com",       "WKL.AS":  "wolterskluwer.com",   "AH.AS":   "ah.nl",
+  // FTSE 100 supplémentaires
+  "BATS.L":  "bat.com",            "AAL.L":   "aa.com",              "GLEN.L":  "glencore.com",
+  "NG.L":    "nationalgrid.com",   "REL.L":   "relx.com",            "LSEG.L":  "lseg.com",
+  "LLOY.L":  "lloydsbank.com",     "BARC.L":  "barclays.com",        "VOD.L":   "vodafone.com",
+  "BT-A.L":  "bt.com",             "PRU.L":   "prudential.com",      "NWG.L":   "natwest.com",
+  // Nikkei supplémentaires
+  "6502.T":  "toshiba.co.jp",      "4519.T":  "chugai-pharm.co.jp",  "9433.T":  "kddi.com",
+  "8035.T":  "tokyoelectron.com",  "6857.T":  "advantest.com",       "9432.T":  "ntt.com",
+  "6367.T":  "daikin.com",         "4901.T":  "fujifilm.com",         "7201.T":  "nissan-global.com",
+  "3382.T":  "7andi.com",          "8001.T":  "itochu.co.jp",         "8031.T":  "mitsui.com",
+  "9020.T":  "jreast.co.jp",       "7011.T":  "mhi.com",              "5401.T":  "nipponsteel.com",
+  "4523.T":  "eisai.com",
+  // S&P 500 supplémentaires
+  "PM":      "pmi.com",            "DHR":     "danaher.com",          "BMY":     "bms.com",
+  "AMGN":    "amgen.com",
 };
 
 // ─── Fallback secteur (Tailwind classes) ──────────────────────────────────────
@@ -319,6 +375,11 @@ const FILTRES: { id: Region; label: string }[] = [
   { id: "europe",    label: "Europe" },
   { id: "ameriques", label: "Amériques" },
   { id: "asie",      label: "Asie" },
+];
+
+const SECTEURS = [
+  "Tous", "Tech", "Finance", "Santé", "Énergie", "Luxe",
+  "Auto", "Industrie", "Semi", "Consomm.", "Télécom", "Mines", "Aéro",
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -467,24 +528,24 @@ function StockTableRow({
         <span />
         <span className="text-[#C5D0DC] text-xs font-mono font-bold tabular-nums">#{s.rang}</span>
         <div className="min-w-0 flex items-center gap-2">
-          {LOGO_MAP[s.ticker] ? (
-            <img
-              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=56`}
-              width={28} height={28}
-              style={{
-                borderRadius: "8px",
-                objectFit: "contain",
-                flexShrink: 0,
-                background: "#fff",
-                padding: "2px",
-                border: "0.5px solid #E5E7EB",
-              }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              alt=""
-            />
-          ) : (
-            <LogoFallback ticker={s.ticker} secteur={s.secteur} size={28} />
-          )}
+          <div style={{
+            width: 36, height: 36, borderRadius: "10px", background: "#fff",
+            border: "0.5px solid #E5E7EB", display: "flex", alignItems: "center",
+            justifyContent: "center", flexShrink: 0, overflow: "hidden",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+          }}>
+            {LOGO_MAP[s.ticker] ? (
+              <img
+                src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
+                width={32} height={32}
+                style={{ objectFit: "contain" }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                alt=""
+              />
+            ) : (
+              <LogoFallback ticker={s.ticker} size={36} />
+            )}
+          </div>
           <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
         </div>
         <span className="text-[#8A9BB0] text-xs font-mono truncate">{s.ticker}</span>
@@ -519,24 +580,24 @@ function StockTableRow({
         style={{ gridTemplateColumns: "1fr 6rem 5.5rem 3rem" }}
       >
         <div className="min-w-0 pr-2 flex items-center gap-2">
-          {LOGO_MAP[s.ticker] ? (
-            <img
-              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=56`}
-              width={28} height={28}
-              style={{
-                borderRadius: "8px",
-                objectFit: "contain",
-                flexShrink: 0,
-                background: "#fff",
-                padding: "2px",
-                border: "0.5px solid #E5E7EB",
-              }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              alt=""
-            />
-          ) : (
-            <LogoFallback ticker={s.ticker} secteur={s.secteur} size={28} />
-          )}
+          <div style={{
+            width: 36, height: 36, borderRadius: "10px", background: "#fff",
+            border: "0.5px solid #E5E7EB", display: "flex", alignItems: "center",
+            justifyContent: "center", flexShrink: 0, overflow: "hidden",
+            boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+          }}>
+            {LOGO_MAP[s.ticker] ? (
+              <img
+                src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
+                width={32} height={32}
+                style={{ objectFit: "contain" }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                alt=""
+              />
+            ) : (
+              <LogoFallback ticker={s.ticker} size={36} />
+            )}
+          </div>
           <div className="min-w-0">
             <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
             <span className="text-[#8A9BB0] text-xs">
@@ -635,6 +696,7 @@ export default function MarchesClient({
   const [liveData,      setLiveData]      = useState<Record<string, StockRow[]>>({});
   const [loadingId,     setLoadingId]     = useState<string | null>(null);
   const [selectedStock, setSelectedStock] = useState<StockRow | null>(null);
+  const [secteurFilter, setSecteurFilter] = useState<string>("Tous");
   const fetchedRef = useRef(new Set<string>());
 
   useEffect(() => {
@@ -660,9 +722,13 @@ export default function MarchesClient({
   const selectedIndice =
     visibleIndices.find((idx) => idx.id === selectedId) ?? visibleIndices[0];
 
-  const displayedStocks = selectedIndice
+  const baseStocks = selectedIndice
     ? (liveData[selectedIndice.id] ?? selectedIndice.stocks)
     : [];
+
+  const displayedStocks = secteurFilter === "Tous"
+    ? baseStocks
+    : baseStocks.filter((s) => SECTOR_MAP[s.ticker]?.label === secteurFilter);
 
   const isLoading = loadingId === selectedIndice?.id;
 
@@ -701,6 +767,22 @@ export default function MarchesClient({
                 }`}
               >
                 {f.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {SECTEURS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setSecteurFilter(s)}
+                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 ${
+                  secteurFilter === s
+                    ? "bg-[#2E80CE] text-white border border-transparent"
+                    : "bg-transparent border border-white/25 text-white/50 hover:bg-white/10 hover:text-white/80"
+                }`}
+              >
+                {s}
               </button>
             ))}
           </div>
