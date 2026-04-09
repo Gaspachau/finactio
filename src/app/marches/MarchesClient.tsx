@@ -26,6 +26,7 @@ export interface IndiceData {
   region: "europe" | "ameriques" | "asie";
   description: string;
   stocks: StockRow[];
+  indexVariation?: number | null;
 }
 
 // ─── Secteurs ─────────────────────────────────────────────────────────────────
@@ -110,13 +111,15 @@ function IndiceCard({
   selected: boolean;
   onClick: () => void;
 }) {
+  // Priorité : variation réelle de l'indice (^FCHI, ^GDAXI…) ; fallback : moyenne des actions
   const validVar = indice.stocks
     .map((s) => s.variation)
     .filter((v): v is number => v !== null);
   const avgPerf = validVar.length > 0
     ? validVar.reduce((a, b) => a + b, 0) / validVar.length
     : null;
-  const pos = avgPerf !== null ? avgPerf >= 0 : true;
+  const displayPerf = indice.indexVariation ?? avgPerf;
+  const pos = displayPerf !== null ? displayPerf >= 0 : true;
 
   return (
     <button
@@ -134,9 +137,9 @@ function IndiceCard({
     >
       <div className="flex items-center justify-between mb-2">
         <span className="text-2xl select-none leading-none">{indice.drapeau}</span>
-        {avgPerf !== null && (
+        {displayPerf !== null && (
           <span className={`text-xs font-bold tabular-nums ${pos ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
-            {pos ? "▲" : "▼"} {Math.abs(avgPerf).toFixed(2)}%
+            {pos ? "▲" : "▼"} {Math.abs(displayPerf).toFixed(2)}%
           </span>
         )}
       </div>

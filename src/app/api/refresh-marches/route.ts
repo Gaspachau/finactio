@@ -4,35 +4,63 @@ import YahooFinance from "yahoo-finance2";
 import { STATIC_INDICES } from "@/lib/marches-data";
 import type { IndiceData, StockRow } from "@/app/marches/MarchesClient";
 
-// ─── Symboles par indice ───────────────────────────────────────────────────────
+// ─── Symboles actions par indice ──────────────────────────────────────────────
 
 const SYMBOLS: Record<string, string[]> = {
   cac40:   ["MC.PA","TTE.PA","RMS.PA","SU.PA","SAN.PA","OR.PA","AIR.PA","BNP.PA","SAF.PA","AI.PA"],
-  sp500:   ["AAPL","MSFT","NVDA","AMZN","GOOGL","META","BRK-B","LLY","TSLA","AVGO"],
-  nasdaq:  ["AAPL","MSFT","NVDA","AMZN","META","GOOGL","TSLA","AVGO","COST","NFLX"],
-  nikkei:  ["7203.T","6758.T","9984.T","6861.T","7267.T","4063.T","6098.T","6954.T","9983.T","8306.T"],
+  dax40:   ["SAP.DE","SIE.DE","ALV.DE","DTE.DE","MBG.DE","BMW.DE","BAS.DE","VOW3.DE","IFX.DE","ADS.DE"],
+  ftsemib: ["ENEL.MI","UCG.MI","ISP.MI","RACE.MI","ENI.MI","STM.MI","MB.MI","LDO.MI","STLA.MI","TIT.MI"],
+  ibex35:  ["ITX.MC","SAN.MC","BBVA.MC","IBE.MC","TEF.MC"],
+  bel20:   ["ABI.BR","UCB.BR","KBC.BR","AGS.BR","SOLB.BR"],
+  aex:     ["ASML.AS","SHEL.AS","INGA.AS","HEIA.AS","PHIA.AS"],
   ftse100: ["SHEL.L","AZN.L","HSBA.L","ULVR.L","BP.L","RIO.L","GSK.L","BHP.L","DGE.L","RR.L"],
+  sp500:   ["AAPL","MSFT","NVDA","AMZN","GOOGL","META","BRK-B","LLY","TSLA","AVGO"],
+  nikkei:  ["7203.T","6758.T","9984.T","6861.T","7267.T","4063.T","6098.T","6954.T","9983.T","8306.T"],
 };
+
+// ─── Symboles d'indices Yahoo Finance (pour variation réelle) ─────────────────
+
+const INDEX_SYMBOL_MAP: Record<string, string> = {
+  cac40:   "^FCHI",
+  dax40:   "^GDAXI",
+  ftsemib: "^FTSEMIB",
+  ibex35:  "^IBEX",
+  bel20:   "^BFX",
+  aex:     "^AEX",
+  ftse100: "^FTSE",
+  sp500:   "^GSPC",
+  nikkei:  "^N225",
+};
+
+const INDEX_SYMBOLS = Object.values(INDEX_SYMBOL_MAP);
+
+// ─── Suffixes européens (EUR) ─────────────────────────────────────────────────
+
+function isEuro(ticker: string): boolean {
+  return (
+    ticker.endsWith(".PA") || ticker.endsWith(".DE") || ticker.endsWith(".MI") ||
+    ticker.endsWith(".MC") || ticker.endsWith(".BR") || ticker.endsWith(".AS")
+  );
+}
 
 // ─── Route GET ────────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  // Vérification du secret
   const secret = req.nextUrl.searchParams.get("secret");
   if (!secret || secret !== process.env.CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Client Supabase
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  // Déduplique tous les symboles
-  const allSymbols = Array.from(new Set(Object.values(SYMBOLS).flat()));
+  // Déduplique : actions + symboles d'indices
+  const allStockSymbols = Array.from(new Set(Object.values(SYMBOLS).flat()));
+  const allSymbols = Array.from(new Set([...allStockSymbols, ...INDEX_SYMBOLS]));
 
-  // 1 seul appel Yahoo Finance pour tous les symboles
+  // 1 seul appel batch Yahoo Finance
   let quoteMap = new Map<string, Record<string, unknown>>();
   let symbolsFetched = 0;
 
@@ -66,45 +94,41 @@ export async function GET(req: NextRequest) {
       const base = staticMap.get(ticker);
       if (!base) continue;
 
-      const rawCap = q?.marketCap as number | undefined;
+      const rawCap   = q?.marketCap as number | undefined;
       const rawPrice = q?.regularMarketPrice as number | undefined;
 
       // ── Capitalisation ────────────────────────────────────────────────────────
-      // .PA  → Yahoo: EUR  → rawCap / 1e9 → Mds€
-      // US   → Yahoo: USD  → rawCap / 1e9 → Mds$
-      // .T   → Yahoo: JPY  → rawCap / 1e9 / 150 → Mds$ (USD equiv)
-      // .L   → Yahoo: USD  (marketCap normalisé en USD malgré currency=GBp)
-      //              → rawCap / 1e9 → Mds$
-      let capMds = base.capMds;
+      let capMds   = base.capMds;
       let currency = base.currency;
 
       if (rawCap && rawCap > 0) {
         if (ticker.endsWith(".T")) {
-          capMds = Math.round(rawCap / 1e9 / 150);
+          capMds = Math.round(rawCap / 1e9 / 150); // JPY → Mds$ equiv
           currency = "$";
-        } else {
+        } else if (isEuro(ticker)) {
           capMds = Math.round(rawCap / 1e9);
-          currency = ticker.endsWith(".PA") ? "€" : "$";
+          currency = "€";
+        } else {
+          // US stocks + .L (Yahoo normalise le market cap .L en USD)
+          capMds = Math.round(rawCap / 1e9);
+          currency = ticker.endsWith(".L") ? "$" : "$";
         }
       }
 
       // ── Prix ──────────────────────────────────────────────────────────────────
-      // .L  → Yahoo: regularMarketPrice en GBp (pence) → divise par 100 pour £
-      // .T  → Yahoo: regularMarketPrice en JPY → affiche tel quel en ¥
-      // .PA → EUR, US → USD : affiche tel quel
       let prix: number | null = null;
-      let prixDevise: string = currency;
+      let prixDevise: string  = currency;
 
       if (rawPrice != null && rawPrice > 0) {
         if (ticker.endsWith(".L")) {
-          prix = Math.round((rawPrice / 100) * 100) / 100;
+          prix = Math.round((rawPrice / 100) * 100) / 100; // GBp → £
           prixDevise = "£";
         } else if (ticker.endsWith(".T")) {
-          prix = Math.round(rawPrice);
+          prix = Math.round(rawPrice); // JPY
           prixDevise = "¥";
         } else {
           prix = Math.round(rawPrice * 100) / 100;
-          prixDevise = currency;
+          prixDevise = currency; // "€" ou "$"
         }
       }
 
@@ -122,9 +146,18 @@ export async function GET(req: NextRequest) {
       .map((r, i) => ({ ...r, rang: i + 1 }));
   }
 
+  function getIndexVariation(indiceId: string): number | null {
+    const symbol = INDEX_SYMBOL_MAP[indiceId];
+    if (!symbol) return null;
+    const q = quoteMap.get(symbol);
+    if (q?.regularMarketChangePercent == null) return null;
+    return Math.round((q.regularMarketChangePercent as number) * 100) / 100;
+  }
+
   const updatedIndices: IndiceData[] = STATIC_INDICES.map((indice) => ({
     ...indice,
     stocks: buildStocks(indice.id),
+    indexVariation: getIndexVariation(indice.id),
   }));
 
   // ─── Sauvegarde dans Supabase ─────────────────────────────────────────────────
@@ -149,5 +182,10 @@ export async function GET(req: NextRequest) {
     updatedAt: new Date().toISOString(),
     source: payload.source,
     symbolsFetched,
+    indicesFetched: updatedIndices.map((i) => ({
+      id: i.id,
+      stocks: i.stocks.length,
+      indexVariation: i.indexVariation,
+    })),
   });
 }
