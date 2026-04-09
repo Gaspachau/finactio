@@ -365,7 +365,7 @@ function StockTableRow({
         <div className="min-w-0 flex items-center gap-2">
           {LOGO_MAP[s.ticker] && (
             <img
-              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_X-1ZO13GSgeOoUrIuJ1B6A&size=32`}
+              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=32`}
               width={20} height={20}
               style={{ borderRadius: "5px", objectFit: "contain", flexShrink: 0 }}
               onError={(e) => { e.currentTarget.style.display = "none"; }}
@@ -408,7 +408,7 @@ function StockTableRow({
         <div className="min-w-0 pr-2 flex items-center gap-2">
           {LOGO_MAP[s.ticker] && (
             <img
-              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_X-1ZO13GSgeOoUrIuJ1B6A&size=32`}
+              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=32`}
               width={20} height={20}
               style={{ borderRadius: "5px", objectFit: "contain", flexShrink: 0 }}
               onError={(e) => { e.currentTarget.style.display = "none"; }}

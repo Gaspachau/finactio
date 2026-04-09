@@ -114,7 +114,7 @@ export default function ActionPanel({
               <span className="text-3xl select-none shrink-0">{drapeau}</span>
               {LOGO_MAP[s.ticker] && (
                 <img
-                  src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_X-1ZO13GSgeOoUrIuJ1B6A&size=64`}
+                  src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
                   width={44} height={44}
                   style={{ borderRadius: "10px", objectFit: "contain", flexShrink: 0, background: "#fff" }}
                   onError={(e) => { e.currentTarget.style.display = "none"; }}
