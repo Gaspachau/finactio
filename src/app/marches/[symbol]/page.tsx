@@ -223,7 +223,7 @@ export default async function StockPage({ params }: { params: { symbol: string }
 
   return (
     <>
-      <Navbar />
+      <Navbar dark />
       <StockDetailClient stock={detail} chartData={chartData} />
       <Footer />
     </>

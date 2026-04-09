@@ -322,8 +322,8 @@ export default function MarchesClient({
                 onClick={() => setRegion(f.id)}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 ${
                   region === f.id
-                    ? "bg-white text-[#0C2248] shadow-lg"
-                    : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
+                    ? "bg-white text-[#0C2248] shadow-lg border border-transparent"
+                    : "bg-transparent border border-white/50 text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 {f.label}

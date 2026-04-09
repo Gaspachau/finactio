@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useLanguage, useT } from "@/contexts/LanguageContext";
 
-export default function Navbar() {
+export default function Navbar({ dark = false }: { dark?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { lang, toggleLanguage } = useLanguage();
   const t = useT();
@@ -18,7 +18,11 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#F0F7FF]/92 backdrop-blur-md border-b border-[#DDEAFF]">
+    <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-colors ${
+      dark
+        ? "bg-[#0C2248]/90 border-white/10"
+        : "bg-[#F0F7FF]/92 border-[#DDEAFF]"
+    }`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link
@@ -26,8 +30,14 @@ export default function Navbar() {
           className="text-2xl tracking-tight uppercase select-none"
           style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 900 }}
         >
-          <span className="text-[#0C2248]">FIN</span>
-          <span className="text-[#2E80CE]">ACTIO</span>
+          {dark ? (
+            <span className="text-white">FINACTIO</span>
+          ) : (
+            <>
+              <span className="text-[#0C2248]">FIN</span>
+              <span className="text-[#2E80CE]">ACTIO</span>
+            </>
+          )}
         </Link>
 
         {/* Desktop nav links */}
@@ -36,7 +46,11 @@ export default function Navbar() {
             <Link
               key={href}
               href={href}
-              className="text-[#1E3A5F] hover:text-[#0C2248] transition-colors text-sm font-medium tracking-wide"
+              className={`transition-colors text-sm font-medium tracking-wide ${
+                dark
+                  ? "text-white/70 hover:text-white"
+                  : "text-[#1E3A5F] hover:text-[#0C2248]"
+              }`}
             >
               {label}
             </Link>
@@ -76,7 +90,7 @@ export default function Navbar() {
             {t.nav.commencer}
           </Link>
           <button
-            className="md:hidden text-[#1E3A5F] hover:text-[#0C2248]"
+            className={`md:hidden ${dark ? "text-white/70 hover:text-white" : "text-[#1E3A5F] hover:text-[#0C2248]"}`}
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Menu"
           >
