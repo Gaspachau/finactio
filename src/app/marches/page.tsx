@@ -19,14 +19,18 @@ const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
 
 // ─── Lecture depuis Supabase ───────────────────────────────────────────────────
 
+interface CommodityItem { prix: number | null; variation: number | null; }
+
 interface MarchesCache {
   source: "yahoo" | "static";
   indices: IndiceData[];
+  commodities?: { gold: CommodityItem; eurusd: CommodityItem };
 }
 
 async function loadFromSupabase(): Promise<{
   indices: IndiceData[];
   updatedAt: string | null;
+  commodities: MarchesCache["commodities"];
 }> {
   try {
     const supabase = createClient(
@@ -42,9 +46,13 @@ async function loadFromSupabase(): Promise<{
     if (error || !row?.data) throw new Error(error?.message ?? "empty");
 
     const cache = row.data as MarchesCache;
-    return { indices: cache.indices ?? STATIC_INDICES, updatedAt: row.updated_at as string };
+    return {
+      indices:     cache.indices ?? STATIC_INDICES,
+      updatedAt:   row.updated_at as string,
+      commodities: cache.commodities,
+    };
   } catch {
-    return { indices: STATIC_INDICES, updatedAt: null };
+    return { indices: STATIC_INDICES, updatedAt: null, commodities: undefined };
   }
 }
 
@@ -98,14 +106,14 @@ async function mergeLivePrices(indices: IndiceData[]): Promise<IndiceData[]> {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function MarchesPage() {
-  const { indices: baseIndices, updatedAt } = await loadFromSupabase();
+  const { indices: baseIndices, updatedAt, commodities } = await loadFromSupabase();
   const indices = await mergeLivePrices(baseIndices);
   const fromCache = updatedAt !== null;
 
   return (
     <div className="min-h-screen bg-[#F0F7FF]">
       <Navbar dark />
-      <MarchesClient indices={indices} updatedAt={updatedAt} fromCache={fromCache} />
+      <MarchesClient indices={indices} updatedAt={updatedAt} fromCache={fromCache} commodities={commodities} />
       <Footer />
     </div>
   );

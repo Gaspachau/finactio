@@ -50,6 +50,12 @@ const INDICE_SYMBOLS: Record<string, string[]> = {
     "7751.T","6502.T","4519.T","9433.T","8035.T","6857.T","7832.T","4543.T","9432.T","6367.T",
     "4901.T","7201.T","3382.T","6594.T","8001.T","8031.T","9020.T","7011.T","5401.T","4523.T",
   ],
+  smi: [
+    "NESN.SW","ROG.SW","NOVN.SW","CFR.SW","UHR.SW",
+    "ABBN.SW","ZURN.SW","GIVN.SW","LONN.SW","AMS.SW",
+    "SREN.SW","SLHN.SW","SGKN.SW","CSGN.SW","UBSG.SW",
+    "GEBN.SW","BALN.SW","SIKA.SW","TEMN.SW","KNIN.SW",
+  ],
 };
 
 // ─── Traduction secteur Yahoo → français ─────────────────────────────────────
@@ -81,6 +87,10 @@ for (const indice of STATIC_INDICES) {
 
 function isEuro(ticker: string): boolean {
   return [".PA", ".DE", ".MI", ".MC", ".BR", ".AS"].some((s) => ticker.endsWith(s));
+}
+
+function isCHF(ticker: string): boolean {
+  return ticker.endsWith(".SW");
 }
 
 // ─── Yahoo Finance ────────────────────────────────────────────────────────────
@@ -125,6 +135,9 @@ export async function GET(
       } else if (isEuro(ticker)) {
         currency = "€";
         capMds = Math.round(rawCap / 1e9);
+      } else if (isCHF(ticker)) {
+        currency = "CHF";
+        capMds = Math.round(rawCap / 1e9);
       } else {
         currency = "$";
         capMds = Math.round(rawCap / 1e9);
@@ -141,6 +154,9 @@ export async function GET(
         } else if (ticker.endsWith(".T")) {
           prix = Math.round(rawPrice);
           prixDevise = "¥";
+        } else if (ticker.endsWith(".SW")) {
+          prix = Math.round(rawPrice * 100) / 100;
+          prixDevise = "CHF";
         } else {
           prix = Math.round(rawPrice * 100) / 100;
           prixDevise = currency;

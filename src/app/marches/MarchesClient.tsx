@@ -250,6 +250,27 @@ export const SECTOR_MAP: Record<string, { label: string; bg: string; color: stri
   "BMY":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
   "AMGN":    { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
   "PM":      { label: "Tabac",      bg: "#E8E4DF", color: "#4A3B2A" },
+  // SMI suisse
+  "NESN.SW": { label: "Alim.",      bg: "#E1F5EE", color: "#085041" },
+  "ROG.SW":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "NOVN.SW": { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "CFR.SW":  { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "UHR.SW":  { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "ABBN.SW": { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "ZURN.SW": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "GIVN.SW": { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "LONN.SW": { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "AMS.SW":  { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "SREN.SW": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "SLHN.SW": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "SGKN.SW": { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
+  "CSGN.SW": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "UBSG.SW": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "GEBN.SW": { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "BALN.SW": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "SIKA.SW": { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "TEMN.SW": { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "KNIN.SW": { label: "Logistique", bg: "#FAEEDA", color: "#633806" },
   // FTSE MIB supplémentaires
   "TRN.MI":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
   "MONC.MI": { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
@@ -379,6 +400,14 @@ export const LOGO_MAP: Record<string, string> = {
   // S&P 500 supplémentaires
   "PM":      "pmi.com",            "DHR":     "danaher.com",          "BMY":     "bms.com",
   "AMGN":    "amgen.com",
+  // SMI suisse
+  "NESN.SW": "nestle.com",         "ROG.SW":  "roche.com",            "NOVN.SW": "novartis.com",
+  "CFR.SW":  "richemont.com",      "UHR.SW":  "swatchgroup.com",      "ABBN.SW": "abb.com",
+  "ZURN.SW": "zurich.com",         "GIVN.SW": "givaudan.com",         "LONN.SW": "lonza.com",
+  "AMS.SW":  "ams-osram.com",      "SREN.SW": "swissre.com",          "SLHN.SW": "swisslife.com",
+  "SGKN.SW": "sg.ch",              "CSGN.SW": "credit-suisse.com",    "UBSG.SW": "ubs.com",
+  "GEBN.SW": "geberit.com",        "BALN.SW": "baloise.com",          "SIKA.SW": "sika.com",
+  "TEMN.SW": "temenos.com",        "KNIN.SW": "kuehne-nagel.com",
 };
 
 // ─── Fallback secteur (Tailwind classes) ──────────────────────────────────────
@@ -789,14 +818,18 @@ function StockTable({
 
 // ─── Composant principal ──────────────────────────────────────────────────────
 
+interface CommodityItem { prix: number | null; variation: number | null; }
+
 export default function MarchesClient({
   indices,
   updatedAt,
   fromCache,
+  commodities,
 }: {
   indices: IndiceData[];
   updatedAt: string | null;
   fromCache: boolean;
+  commodities?: { gold: CommodityItem; eurusd: CommodityItem };
 }) {
   const [selectedId,    setSelectedId]    = useState<string>(indices[0]?.id ?? "");
   const [region,        setRegion]        = useState<Region>("tous");
@@ -976,6 +1009,50 @@ export default function MarchesClient({
           sortDir={sortDir}
           onSort={handleSort}
         />
+      </section>
+
+      {/* ── Devises & Matières premières ─────────────────────────────────────── */}
+      <section className="px-4 sm:px-6 pb-6 max-w-6xl mx-auto">
+        <h2 className="text-base font-black text-[#0C2248] uppercase tracking-tight mb-3"
+          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}>
+          Devises &amp; Matières premières
+        </h2>
+        <div className="grid grid-cols-2 gap-3">
+          {/* Or */}
+          <div className="rounded-2xl border px-5 py-4 flex items-center gap-4"
+            style={{ background: "#FAEEDA", borderColor: "#F59E0B", boxShadow: "0 2px 8px rgba(245,158,11,0.10)" }}>
+            <span className="text-3xl select-none leading-none">🥇</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-[#92400E] uppercase tracking-widest">XAU / USD</p>
+              <p className="text-[#0C2248] font-black text-lg tabular-nums leading-tight">
+                {commodities?.gold.prix != null
+                  ? `${commodities.gold.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`
+                  : "—"}
+              </p>
+              <p className="text-xs text-[#92400E] mt-0.5">Once d&apos;or</p>
+            </div>
+            <div>
+              <VariationBadge v={commodities?.gold.variation ?? null} size="sm" />
+            </div>
+          </div>
+          {/* EUR/USD */}
+          <div className="rounded-2xl border px-5 py-4 flex items-center gap-4"
+            style={{ background: "#EEF4FF", borderColor: "#DDEAFF", boxShadow: "0 2px 8px rgba(14,52,120,0.06)" }}>
+            <span className="text-3xl select-none leading-none">💱</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-[#2E80CE] uppercase tracking-widest">EUR / USD</p>
+              <p className="text-[#0C2248] font-black text-lg tabular-nums leading-tight">
+                {commodities?.eurusd.prix != null
+                  ? commodities.eurusd.prix.toFixed(4)
+                  : "—"}
+              </p>
+              <p className="text-xs text-[#5A7A9A] mt-0.5">Taux de change</p>
+            </div>
+            <div>
+              <VariationBadge v={commodities?.eurusd.variation ?? null} size="sm" />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── Disclaimer ───────────────────────────────────────────────────────── */}

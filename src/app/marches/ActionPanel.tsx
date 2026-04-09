@@ -29,12 +29,13 @@ interface StockDetail {
 const FLAG_SUFFIXES: [string, string][] = [
   [".PA", "🇫🇷"], [".DE", "🇩🇪"], [".MI", "🇮🇹"], [".MC", "🇪🇸"],
   [".BR", "🇧🇪"], [".AS", "🇳🇱"], [".L",  "🇬🇧"], [".T",  "🇯🇵"],
+  [".SW", "🇨🇭"],
 ];
 
 const EXCHANGE_SUFFIXES: [string, string][] = [
   [".PA", "Euronext Paris"], [".DE", "Xetra"], [".MI", "Borsa Italiana"],
   [".MC", "Bolsa Madrid"],   [".BR", "Euronext Brussels"], [".AS", "Euronext Amsterdam"],
-  [".L",  "London SE"],      [".T",  "Tokyo SE"],
+  [".L",  "London SE"],      [".T",  "Tokyo SE"], [".SW", "SIX Swiss Exchange"],
 ];
 
 function flagFromTicker(t: string): string {
