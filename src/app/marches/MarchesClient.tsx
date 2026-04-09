@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
+import ActionPanel from "./ActionPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -29,7 +29,83 @@ export interface IndiceData {
   indexVariation?: number | null;
 }
 
-// ─── Secteurs ─────────────────────────────────────────────────────────────────
+// ─── SECTOR_MAP ticker → badge ────────────────────────────────────────────────
+
+const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> = {
+  "MC.PA":   { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "OR.PA":   { label: "Consomm.",   bg: "#E1F5EE", color: "#085041" },
+  "RMS.PA":  { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "TTE.PA":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "SU.PA":   { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "AIR.PA":  { label: "Aéro",       bg: "#E6F1FB", color: "#0C447C" },
+  "SAF.PA":  { label: "Aéro",       bg: "#E6F1FB", color: "#0C447C" },
+  "AI.PA":   { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "BNP.PA":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "SAN.PA":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "CS.PA":   { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "SG.PA":   { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "ACA.PA":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "BN.PA":   { label: "Alim.",      bg: "#E1F5EE", color: "#085041" },
+  "KER.PA":  { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "RI.PA":   { label: "Boissons",   bg: "#FAEEDA", color: "#633806" },
+  "DSY.PA":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "CAP.PA":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "VIE.PA":  { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
+  "ORA.PA":  { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
+  "ENGI.PA": { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "DG.PA":   { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "PUB.PA":  { label: "Média",      bg: "#FAECE7", color: "#712B13" },
+  "SAP.DE":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "SIE.DE":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "ALV.DE":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "DTE.DE":  { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
+  "MBG.DE":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "BMW.DE":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "BAS.DE":  { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "VOW3.DE": { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "IFX.DE":  { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "BAYN.DE": { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "AAPL":    { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "MSFT":    { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "NVDA":    { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "AMZN":    { label: "E-com",      bg: "#FAEEDA", color: "#633806" },
+  "GOOGL":   { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "META":    { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "BRK-B":   { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "LLY":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "TSLA":    { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "AVGO":    { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "JPM":     { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "NFLX":    { label: "Streaming",  bg: "#FAECE7", color: "#712B13" },
+  "COST":    { label: "Distrib.",   bg: "#E1F5EE", color: "#085041" },
+  "ENEL.MI": { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "UCG.MI":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "ISP.MI":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "RACE.MI": { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "ENI.MI":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "STM.MI":  { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "ITX.MC":  { label: "Mode",       bg: "#EEEDFE", color: "#3C3489" },
+  "SAN.MC":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "BBVA.MC": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "IBE.MC":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "ABI.BR":  { label: "Boissons",   bg: "#FAEEDA", color: "#633806" },
+  "UCB.BR":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "KBC.BR":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "ASML.AS": { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "SHEL.AS": { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "INGA.AS": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "SHEL.L":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "AZN.L":   { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "HSBA.L":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "RR.L":    { label: "Aéro",       bg: "#E6F1FB", color: "#0C447C" },
+  "7203.T":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "6758.T":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "9984.T":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "6861.T":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "7267.T":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+};
+
+// ─── Fallback secteur (Tailwind classes) ──────────────────────────────────────
 
 const SECTEUR_COLORS: Record<string, string> = {
   "Technologie":        "bg-blue-50 text-blue-700",
@@ -44,11 +120,9 @@ const SECTEUR_COLORS: Record<string, string> = {
   "Aéronautique":       "bg-indigo-50 text-indigo-700",
   "Chimie":             "bg-teal-50 text-teal-700",
   "Consommation":       "bg-amber-50 text-amber-700",
-  "Électronique":       "bg-blue-50 text-blue-700",
   "Streaming":          "bg-red-50 text-red-700",
   "Services":           "bg-slate-50 text-slate-600",
   "Mode":               "bg-pink-50 text-pink-700",
-  "Robotique":          "bg-indigo-50 text-indigo-700",
   "Mines":              "bg-stone-50 text-stone-700",
   "Boissons":           "bg-lime-50 text-lime-700",
   "E-commerce":         "bg-orange-50 text-orange-700",
@@ -56,11 +130,33 @@ const SECTEUR_COLORS: Record<string, string> = {
   "Assurance":          "bg-cyan-50 text-cyan-700",
   "Télécommunications": "bg-sky-50 text-sky-700",
   "Immobilier":         "bg-rose-50 text-rose-700",
-  "Matériaux":          "bg-teal-50 text-teal-700",
 };
 
-function secteurClass(s: string) {
-  return SECTEUR_COLORS[s] ?? "bg-gray-100 text-gray-600";
+function SectorBadge({ ticker, secteur }: { ticker: string; secteur: string }) {
+  const entry = SECTOR_MAP[ticker];
+  if (entry) {
+    return (
+      <span
+        className="text-xs font-semibold px-2 py-0.5 rounded-md whitespace-nowrap"
+        style={{ background: entry.bg, color: entry.color }}
+      >
+        {entry.label}
+      </span>
+    );
+  }
+  const cls = SECTEUR_COLORS[secteur];
+  if (cls) {
+    return (
+      <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${cls}`}>
+        {secteur.length > 10 ? secteur.slice(0, 9) + "." : secteur}
+      </span>
+    );
+  }
+  return (
+    <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-gray-100 text-gray-500">
+      Autre
+    </span>
+  );
 }
 
 // ─── Filtres région ───────────────────────────────────────────────────────────
@@ -166,7 +262,6 @@ function SkeletonRow({ odd }: { odd: boolean }) {
   return (
     <div className="relative" style={{ background: odd ? "#FAFCFF" : "#fff" }}>
       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gray-200" />
-      {/* Desktop */}
       <div
         className="hidden sm:grid gap-x-4 items-center pl-5 pr-7 py-3.5"
         style={{ gridTemplateColumns: "4px 2.5rem 1fr 5rem 6rem 9.5rem 7.5rem 6rem 3.5rem" }}
@@ -181,7 +276,6 @@ function SkeletonRow({ odd }: { odd: boolean }) {
         <div className="h-3 w-14 rounded bg-gray-200 animate-pulse" />
         <span />
       </div>
-      {/* Mobile */}
       <div
         className="sm:hidden grid items-center pl-4 pr-5 py-3.5"
         style={{ gridTemplateColumns: "1fr 6rem 5.5rem 3rem" }}
@@ -197,11 +291,20 @@ function SkeletonRow({ odd }: { odd: boolean }) {
 
 // ─── StockTableRow ────────────────────────────────────────────────────────────
 
-function StockTableRow({ s, i }: { s: StockRow; i: number }) {
+function StockTableRow({
+  s,
+  i,
+  onSelect,
+}: {
+  s: StockRow;
+  i: number;
+  onSelect: (stock: StockRow) => void;
+}) {
   return (
     <div
-      className="relative group transition-colors duration-150 hover:bg-[#F0F7FF]"
+      className="relative group cursor-pointer transition-colors duration-150 hover:bg-[#F0F7FF]"
       style={{ background: i % 2 === 0 ? "#fff" : "#FAFCFF" }}
+      onClick={() => onSelect(s)}
     >
       <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: sparklineColor(s.variation) }} />
 
@@ -222,24 +325,22 @@ function StockTableRow({ s, i }: { s: StockRow; i: number }) {
             : "—"}
         </span>
         <div>
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${secteurClass(s.secteur)}`}>
-            {s.secteur}
-          </span>
+          <SectorBadge ticker={s.ticker} secteur={s.secteur} />
         </div>
         <span className="text-[#0C2248] text-sm font-bold tabular-nums">
           {s.capMds > 0 ? `${s.capMds.toLocaleString("fr-FR")} Mds${s.currency}` : "—"}
         </span>
         <VariationBadge v={s.variation} />
         <div className="flex justify-end">
-          <Link
-            href={`/marches/${encodeURIComponent(s.ticker)}`}
+          <button
+            onClick={(e) => { e.stopPropagation(); onSelect(s); }}
             className="inline-flex items-center gap-1 text-[#2E80CE] text-xs font-semibold transition-colors hover:text-[#0C2248] group/lnk"
           >
             <span>Voir</span>
             <svg className="w-3 h-3 transition-transform duration-150 group-hover/lnk:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -263,11 +364,14 @@ function StockTableRow({ s, i }: { s: StockRow; i: number }) {
           <VariationBadge v={s.variation} size="sm" />
         </div>
         <div className="flex justify-end">
-          <Link href={`/marches/${encodeURIComponent(s.ticker)}`} className="text-[#2E80CE] group/lnk">
-            <svg className="w-4 h-4 transition-transform duration-150 group-hover/lnk:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button
+            onClick={(e) => { e.stopPropagation(); onSelect(s); }}
+            className="text-[#2E80CE]"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </Link>
+          </button>
         </div>
       </div>
     </div>
@@ -276,9 +380,15 @@ function StockTableRow({ s, i }: { s: StockRow; i: number }) {
 
 // ─── StockTable ───────────────────────────────────────────────────────────────
 
-function StockTable({ stocks, loading }: { stocks: StockRow[]; loading: boolean }) {
-  const SKELETON_COUNT = 8;
-
+function StockTable({
+  stocks,
+  loading,
+  onSelect,
+}: {
+  stocks: StockRow[];
+  loading: boolean;
+  onSelect: (stock: StockRow) => void;
+}) {
   if (!loading && stocks.length === 0) {
     return (
       <div className="bg-white rounded-2xl px-7 py-10 text-center"
@@ -291,8 +401,7 @@ function StockTable({ stocks, loading }: { stocks: StockRow[]; loading: boolean 
   return (
     <div className="bg-white rounded-2xl overflow-hidden"
       style={{ boxShadow: "0 2px 16px rgba(14,52,120,0.08)" }}>
-
-      {/* En-têtes desktop */}
+      {/* En-têtes */}
       <div
         className="hidden sm:grid gap-x-4 px-7 py-2.5 bg-[#F8FAFD]"
         style={{ gridTemplateColumns: "4px 2.5rem 1fr 5rem 6rem 9.5rem 7.5rem 6rem 3.5rem" }}
@@ -302,15 +411,14 @@ function StockTable({ stocks, loading }: { stocks: StockRow[]; loading: boolean 
         ))}
       </div>
 
-      {/* Lignes existantes */}
-      {stocks.map((s, i) => <StockTableRow key={s.ticker} s={s} i={i} />)}
+      {stocks.map((s, i) => (
+        <StockTableRow key={s.ticker} s={s} i={i} onSelect={onSelect} />
+      ))}
 
-      {/* Skeleton pendant chargement */}
-      {loading && Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+      {loading && Array.from({ length: 8 }).map((_, i) => (
         <SkeletonRow key={`sk-${i}`} odd={(stocks.length + i) % 2 !== 0} />
       ))}
 
-      {/* Compteur */}
       {!loading && stocks.length > 0 && (
         <div className="px-7 py-2.5 bg-[#F8FAFD] border-t border-[#F0F7FF]">
           <p className="text-[#8A9BB0] text-xs">
@@ -333,13 +441,13 @@ export default function MarchesClient({
   updatedAt: string | null;
   fromCache: boolean;
 }) {
-  const [selectedId, setSelectedId] = useState<string>(indices[0]?.id ?? "");
-  const [region,     setRegion]     = useState<Region>("tous");
-  const [liveData,   setLiveData]   = useState<Record<string, StockRow[]>>({});
-  const [loadingId,  setLoadingId]  = useState<string | null>(null);
+  const [selectedId,    setSelectedId]    = useState<string>(indices[0]?.id ?? "");
+  const [region,        setRegion]        = useState<Region>("tous");
+  const [liveData,      setLiveData]      = useState<Record<string, StockRow[]>>({});
+  const [loadingId,     setLoadingId]     = useState<string | null>(null);
+  const [selectedStock, setSelectedStock] = useState<StockRow | null>(null);
   const fetchedRef = useRef(new Set<string>());
 
-  // Charge les stocks live à chaque changement d'indice sélectionné
   useEffect(() => {
     if (!selectedId || fetchedRef.current.has(selectedId)) return;
     fetchedRef.current.add(selectedId);
@@ -352,12 +460,8 @@ export default function MarchesClient({
           setLiveData((prev) => ({ ...prev, [selectedId]: data.stocks! }));
         }
       })
-      .catch(() => {
-        fetchedRef.current.delete(selectedId); // retry possible
-      })
-      .finally(() => {
-        setLoadingId((prev) => (prev === selectedId ? null : prev));
-      });
+      .catch(() => { fetchedRef.current.delete(selectedId); })
+      .finally(() => { setLoadingId((prev) => (prev === selectedId ? null : prev)); });
   }, [selectedId]);
 
   const visibleIndices = region === "tous"
@@ -396,7 +500,6 @@ export default function MarchesClient({
               : "Données indicatives · actualisées manuellement"}
           </p>
 
-          {/* Filtres région */}
           <div className="flex flex-wrap gap-2">
             {FILTRES.map((f) => (
               <button
@@ -418,7 +521,6 @@ export default function MarchesClient({
       {/* ── Grille d'indices + tableau ────────────────────────────────────────── */}
       <section className="px-4 sm:px-6 pt-8 pb-6 max-w-6xl mx-auto">
 
-        {/* Cards 3×3 */}
         {visibleIndices.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
             {visibleIndices.map((indice) => (
@@ -446,7 +548,6 @@ export default function MarchesClient({
           </div>
         )}
 
-        {/* En-tête tableau */}
         {selectedIndice && (
           <div className="flex items-center gap-3 mb-4">
             <span className="text-2xl select-none leading-none">{selectedIndice.drapeau}</span>
@@ -462,8 +563,11 @@ export default function MarchesClient({
           </div>
         )}
 
-        {/* Tableau plat */}
-        <StockTable stocks={displayedStocks} loading={isLoading} />
+        <StockTable
+          stocks={displayedStocks}
+          loading={isLoading}
+          onSelect={setSelectedStock}
+        />
       </section>
 
       {/* ── Disclaimer ───────────────────────────────────────────────────────── */}
@@ -476,10 +580,16 @@ export default function MarchesClient({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-[#8A9BB0] text-sm leading-relaxed">
-            Données fournies par Yahoo Finance. Le top 10 est actualisé quotidiennement via Supabase ; le reste des valeurs est chargé en live au clic. À titre éducatif uniquement, ne constitue pas un conseil en investissement.
+            Données fournies par Yahoo Finance. Le top 10 est actualisé quotidiennement via Supabase ; le reste est chargé en live au clic. À titre éducatif uniquement, ne constitue pas un conseil en investissement.
           </p>
         </div>
       </section>
+
+      {/* ── Panneau latéral ──────────────────────────────────────────────────── */}
+      <ActionPanel
+        stock={selectedStock}
+        onClose={() => setSelectedStock(null)}
+      />
     </>
   );
 }
