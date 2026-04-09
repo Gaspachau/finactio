@@ -125,6 +125,31 @@ const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> =
   "HEN3.DE": { label: "Consomm.",   bg: "#E1F5EE", color: "#085041" },
   "RWE.DE":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
   "ADS.DE":  { label: "Mode",       bg: "#EEEDFE", color: "#3C3489" },
+  "MTX.DE":  { label: "Aéro",       bg: "#E6F1FB", color: "#0C447C" },
+  "PAH3.DE": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "AIR.DE":  { label: "Aéro",       bg: "#E6F1FB", color: "#0C447C" },
+  "FME.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "SHL.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "DHER.DE": { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "ZAL.DE":  { label: "Mode",       bg: "#EEEDFE", color: "#3C3489" },
+  "VNA.DE":  { label: "Immo",       bg: "#FAEEDA", color: "#633806" },
+  "SY1.DE":  { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "QIA.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "ENR.DE":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "BNR.DE":  { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "GXI.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "HNR1.DE": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "LEG.DE":  { label: "Immo",       bg: "#FAEEDA", color: "#633806" },
+  "P911.DE": { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "BEI.DE":  { label: "Consomm.",   bg: "#E1F5EE", color: "#085041" },
+  "DHL.DE":  { label: "Logistique", bg: "#FAEEDA", color: "#633806" },
+  "1COV.DE": { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "MAN.DE":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "CBKG.DE": { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "FRE.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "CON.DE":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "HEI.DE":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "G1A.DE":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
   // FTSE MIB manquants
   "MB.MI":   { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
   "LDO.MI":  { label: "Défense",    bg: "#E6F1FB", color: "#0C447C" },
@@ -225,6 +250,15 @@ export const LOGO_MAP: Record<string, string> = {
   "BAS.DE":  "basf.com",           "VOW3.DE": "volkswagen.com",      "IFX.DE":  "infineon.com",
   "BAYN.DE": "bayer.com",          "MRK.DE":  "merckgroup.com",      "DB1.DE":  "deutsche-boerse.com",
   "HEN3.DE": "henkel.com",         "RWE.DE":  "rwe.com",             "ADS.DE":  "adidas.com",
+  "MTX.DE":  "mtu.de",             "PAH3.DE": "porsche-se.com",      "AIR.DE":  "airbus.com",
+  "FME.DE":  "freseniusmedicalcare.com","SHL.DE":"siemens-healthineers.com","DHER.DE":"deliveryhero.com",
+  "ZAL.DE":  "zalando.com",        "VNA.DE":  "vonovia.de",           "SY1.DE":  "symrise.com",
+  "QIA.DE":  "qiagen.com",         "ENR.DE":  "siemens-energy.com",  "BNR.DE":  "brenntag.com",
+  "GXI.DE":  "gerresheimer.com",   "HNR1.DE": "hannover-re.com",     "LEG.DE":  "leg-se.com",
+  "P911.DE": "porsche.com",        "BEI.DE":  "beiersdorf.com",      "DHL.DE":  "dhl.com",
+  "1COV.DE": "covestro.com",       "MAN.DE":  "man.eu",              "CBKG.DE": "commerzbank.com",
+  "FRE.DE":  "fresenius.com",      "CON.DE":  "continental.com",     "HEI.DE":  "heidelbergmaterials.com",
+  "G1A.DE":  "gea.com",
   "AAPL":    "apple.com",          "MSFT":    "microsoft.com",       "NVDA":    "nvidia.com",
   "AMZN":    "amazon.com",         "GOOGL":   "google.com",          "META":    "meta.com",
   "BRK-B":   "berkshirehathaway.com","LLY":   "lilly.com",           "TSLA":    "tesla.com",
@@ -336,33 +370,42 @@ function SectorBadge({ ticker, secteur }: { ticker: string; secteur: string }) {
   );
 }
 
-// ─── LogoFallback ─────────────────────────────────────────────────────────────
+// ─── LogoWithFallback (container 36×36 + fallback si img échoue) ─────────────
 
-function LogoFallback({ ticker, size = 28 }: { ticker: string; secteur?: string; size?: number }) {
-  const entry = SECTOR_MAP[ticker];
-  const bg    = entry?.bg    ?? "#E6F1FB";
-  const color = entry?.color ?? "#0C447C";
-  const abbr  = ticker.replace(/\.[A-Z]+$/, "").slice(0, 3).toUpperCase();
+function LogoWithFallback({ ticker }: { ticker: string }) {
+  const [failed, setFailed] = useState(false);
+  const domain = LOGO_MAP[ticker];
+  const entry  = SECTOR_MAP[ticker];
+  const bg     = entry?.bg    ?? "#E6F1FB";
+  const color  = entry?.color ?? "#0C447C";
+  const abbr   = ticker.replace(/\.[A-Z]+$/, "").slice(0, 3).toUpperCase();
+
   return (
-    <span
-      style={{
-        width: size, height: size,
-        borderRadius: Math.round(size * 0.29),
-        background: bg,
-        color,
-        fontSize: Math.round(size * 0.32),
-        fontWeight: 700,
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexShrink: 0,
-        border: "0.5px solid #E5E7EB",
-        userSelect: "none",
-        letterSpacing: "-0.03em",
-      }}
-    >
-      {abbr}
-    </span>
+    <div style={{
+      width: 36, height: 36, borderRadius: "10px", background: "#fff",
+      border: "0.5px solid #E5E7EB", display: "flex", alignItems: "center",
+      justifyContent: "center", flexShrink: 0, overflow: "hidden",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+    }}>
+      {domain && !failed ? (
+        <img
+          src={`https://img.logo.dev/${domain}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
+          width={32} height={32}
+          style={{ objectFit: "contain" }}
+          onError={() => setFailed(true)}
+          alt=""
+        />
+      ) : (
+        <span style={{
+          width: "100%", height: "100%", background: bg, color,
+          fontSize: 11, fontWeight: 700,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          userSelect: "none", letterSpacing: "-0.03em",
+        }}>
+          {abbr}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -528,24 +571,7 @@ function StockTableRow({
         <span />
         <span className="text-[#C5D0DC] text-xs font-mono font-bold tabular-nums">#{s.rang}</span>
         <div className="min-w-0 flex items-center gap-2">
-          <div style={{
-            width: 36, height: 36, borderRadius: "10px", background: "#fff",
-            border: "0.5px solid #E5E7EB", display: "flex", alignItems: "center",
-            justifyContent: "center", flexShrink: 0, overflow: "hidden",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-          }}>
-            {LOGO_MAP[s.ticker] ? (
-              <img
-                src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
-                width={32} height={32}
-                style={{ objectFit: "contain" }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                alt=""
-              />
-            ) : (
-              <LogoFallback ticker={s.ticker} size={36} />
-            )}
-          </div>
+          <LogoWithFallback ticker={s.ticker} />
           <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
         </div>
         <span className="text-[#8A9BB0] text-xs font-mono truncate">{s.ticker}</span>
@@ -580,24 +606,7 @@ function StockTableRow({
         style={{ gridTemplateColumns: "1fr 6rem 5.5rem 3rem" }}
       >
         <div className="min-w-0 pr-2 flex items-center gap-2">
-          <div style={{
-            width: 36, height: 36, borderRadius: "10px", background: "#fff",
-            border: "0.5px solid #E5E7EB", display: "flex", alignItems: "center",
-            justifyContent: "center", flexShrink: 0, overflow: "hidden",
-            boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-          }}>
-            {LOGO_MAP[s.ticker] ? (
-              <img
-                src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
-                width={32} height={32}
-                style={{ objectFit: "contain" }}
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                alt=""
-              />
-            ) : (
-              <LogoFallback ticker={s.ticker} size={36} />
-            )}
-          </div>
+          <LogoWithFallback ticker={s.ticker} />
           <div className="min-w-0">
             <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
             <span className="text-[#8A9BB0] text-xs">
