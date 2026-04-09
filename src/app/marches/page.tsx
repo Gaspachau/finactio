@@ -103,7 +103,7 @@ export default async function MarchesPage() {
   const fromCache = updatedAt !== null;
 
   return (
-    <div className="min-h-screen bg-[#F4F7FC]">
+    <div className="min-h-screen bg-[#F0F7FF]">
       <Navbar dark />
       <MarchesClient indices={indices} updatedAt={updatedAt} fromCache={fromCache} />
       <Footer />
