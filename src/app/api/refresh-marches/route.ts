@@ -21,7 +21,7 @@ const SYMBOLS: Record<string, string[]> = {
 
 // ─── Matières premières & devises ─────────────────────────────────────────────
 
-const COMMODITY_SYMBOLS = ["GC=F", "EURUSD=X"];
+const COMMODITY_SYMBOLS = ["GC=F", "EURUSD=X", "SI=F", "BZ=F"];
 
 // ─── Symboles d'indices Yahoo Finance (pour variation réelle) ─────────────────
 
@@ -188,9 +188,11 @@ export async function GET(req: NextRequest) {
     };
   }
 
-  const commodities = {
-    gold:   extractCommodity("GC=F"),
+  const marches = {
+    or:     extractCommodity("GC=F"),
     eurusd: extractCommodity("EURUSD=X"),
+    argent: extractCommodity("SI=F"),
+    brent:  extractCommodity("BZ=F"),
   };
 
   // ─── Sauvegarde dans Supabase ─────────────────────────────────────────────────
@@ -198,7 +200,7 @@ export async function GET(req: NextRequest) {
   const payload = {
     source: symbolsFetched > 0 ? "yahoo" : "static",
     indices: updatedIndices,
-    commodities,
+    marches,
   };
 
   const { error } = await supabase

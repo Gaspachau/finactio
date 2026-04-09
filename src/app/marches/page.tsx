@@ -24,13 +24,13 @@ interface CommodityItem { prix: number | null; variation: number | null; }
 interface MarchesCache {
   source: "yahoo" | "static";
   indices: IndiceData[];
-  commodities?: { gold: CommodityItem; eurusd: CommodityItem };
+  marches?: { or: CommodityItem; eurusd: CommodityItem; argent: CommodityItem; brent: CommodityItem };
 }
 
 async function loadFromSupabase(): Promise<{
   indices: IndiceData[];
   updatedAt: string | null;
-  commodities: MarchesCache["commodities"];
+  marches: MarchesCache["marches"];
 }> {
   try {
     const supabase = createClient(
@@ -47,12 +47,12 @@ async function loadFromSupabase(): Promise<{
 
     const cache = row.data as MarchesCache;
     return {
-      indices:     cache.indices ?? STATIC_INDICES,
-      updatedAt:   row.updated_at as string,
-      commodities: cache.commodities,
+      indices:   cache.indices ?? STATIC_INDICES,
+      updatedAt: row.updated_at as string,
+      marches:   cache.marches,
     };
   } catch {
-    return { indices: STATIC_INDICES, updatedAt: null, commodities: undefined };
+    return { indices: STATIC_INDICES, updatedAt: null, marches: undefined };
   }
 }
 
@@ -106,14 +106,14 @@ async function mergeLivePrices(indices: IndiceData[]): Promise<IndiceData[]> {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function MarchesPage() {
-  const { indices: baseIndices, updatedAt, commodities } = await loadFromSupabase();
+  const { indices: baseIndices, updatedAt, marches } = await loadFromSupabase();
   const indices = await mergeLivePrices(baseIndices);
   const fromCache = updatedAt !== null;
 
   return (
     <div className="min-h-screen bg-[#F0F7FF]">
       <Navbar dark />
-      <MarchesClient indices={indices} updatedAt={updatedAt} fromCache={fromCache} commodities={commodities} />
+      <MarchesClient indices={indices} updatedAt={updatedAt} fromCache={fromCache} marches={marches} />
       <Footer />
     </div>
   );

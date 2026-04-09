@@ -407,7 +407,7 @@ export const LOGO_MAP: Record<string, string> = {
   "AMS.SW":  "ams-osram.com",      "SREN.SW": "swissre.com",          "SLHN.SW": "swisslife.com",
   "SGKN.SW": "sg.ch",              "CSGN.SW": "credit-suisse.com",    "UBSG.SW": "ubs.com",
   "GEBN.SW": "geberit.com",        "BALN.SW": "baloise.com",          "SIKA.SW": "sika.com",
-  "TEMN.SW": "temenos.com",        "KNIN.SW": "kuehne-nagel.com",
+  "TEMN.SW": "temenos.com",        "KNIN.SW": "konecranes.com",
 };
 
 // ─── Fallback secteur (Tailwind classes) ──────────────────────────────────────
@@ -824,13 +824,14 @@ export default function MarchesClient({
   indices,
   updatedAt,
   fromCache,
-  commodities,
+  marches,
 }: {
   indices: IndiceData[];
   updatedAt: string | null;
   fromCache: boolean;
-  commodities?: { gold: CommodityItem; eurusd: CommodityItem };
+  marches?: { or: CommodityItem; eurusd: CommodityItem; argent: CommodityItem; brent: CommodityItem };
 }) {
+  const [mainTab,       setMainTab]       = useState<"indices" | "marches">("indices");
   const [selectedId,    setSelectedId]    = useState<string>(indices[0]?.id ?? "");
   const [region,        setRegion]        = useState<Region>("tous");
   const [liveData,      setLiveData]      = useState<Record<string, StockRow[]>>({});
@@ -905,155 +906,219 @@ export default function MarchesClient({
             <br />
             <span className="text-[#2E80CE]">mondiaux</span>
           </h1>
-          <p className="text-white/50 text-lg mb-6">
-            Tous les grands indices classés par capitalisation.
+          <p className="text-white/50 text-lg mb-2">
+            Indices, devises et matières premières.
           </p>
-          <p className="text-white/25 text-xs mb-8">
+          <p className="text-white/25 text-xs">
             {fromCache && updatedAt
               ? `Données actualisées le ${formatUpdatedAt(updatedAt)} · Yahoo Finance`
               : "Données indicatives · actualisées manuellement"}
           </p>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap gap-2">
+      {/* ── Tabs principaux ──────────────────────────────────────────────────── */}
+      <section className="px-4 sm:px-6 pt-6 max-w-6xl mx-auto">
+        <div className="flex gap-2 mb-6">
+          {([
+            { id: "indices",  label: "Indices boursiers" },
+            { id: "marches",  label: "Devises & Matières premières" },
+          ] as { id: "indices" | "marches"; label: string }[]).map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setMainTab(tab.id)}
+              className="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150"
+              style={{
+                background:  mainTab === tab.id ? "#0C2248" : "#fff",
+                color:       mainTab === tab.id ? "#fff"    : "#5A7A9A",
+                border:      mainTab === tab.id ? "1px solid #0C2248" : "1px solid #DDEAFF",
+                boxShadow:   mainTab === tab.id ? "0 2px 8px rgba(12,34,72,0.18)" : "none",
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Onglet Indices ───────────────────────────────────────────────────── */}
+      {mainTab === "indices" && (
+        <section className="px-4 sm:px-6 pb-6 max-w-6xl mx-auto">
+
+          {/* Filtres région */}
+          <div className="flex flex-wrap gap-2 mb-5">
             {FILTRES.map((f) => (
               <button
                 key={f.id}
                 onClick={() => setRegion(f.id)}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 ${
-                  region === f.id
-                    ? "bg-white text-[#0C2248] shadow-lg border border-transparent"
-                    : "bg-transparent border border-white/50 text-white/70 hover:bg-white/10 hover:text-white"
-                }`}
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150"
+                style={{
+                  background: region === f.id ? "#0C2248" : "#fff",
+                  color:      region === f.id ? "#fff"    : "#5A7A9A",
+                  border:     region === f.id ? "1px solid #0C2248" : "1px solid #DDEAFF",
+                }}
               >
                 {f.label}
               </button>
             ))}
           </div>
 
-        </div>
-      </section>
-
-      {/* ── Grille d'indices + tableau ────────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pt-8 pb-6 max-w-6xl mx-auto">
-
-        {visibleIndices.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-            {visibleIndices.map((indice) => (
-              <IndiceCard
-                key={indice.id}
-                indice={indice}
-                selected={selectedIndice?.id === indice.id}
-                loading={loadingId === indice.id}
-                onClick={() => setSelectedId(indice.id)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div
-            className="bg-white rounded-2xl px-8 py-12 text-center mb-8"
-            style={{ boxShadow: "0 2px 16px rgba(14,52,120,0.08)" }}
-          >
-            <p className="text-[#8A9BB0] text-lg mb-3">Aucun indice pour cette région.</p>
-            <button
-              onClick={() => setRegion("tous")}
-              className="text-[#2E80CE] text-sm font-semibold hover:underline"
-            >
-              Voir tous les indices →
-            </button>
-          </div>
-        )}
-
-        {selectedIndice && (
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 12, minWidth: 0 }}>
-            {/* Titre indice */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <span className="text-2xl select-none leading-none">{selectedIndice.drapeau}</span>
-              <div>
-                <h2
-                  className="text-xl font-black text-[#0C2248] uppercase leading-tight"
-                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-                >
-                  {selectedIndice.nom}
-                </h2>
-                <p className="text-[#8A9BB0] text-xs mt-0.5">{selectedIndice.description}</p>
-              </div>
-            </div>
-            {/* Pills secteur scrollables */}
-            <div style={{ display: "flex", gap: 5, overflowX: "auto", alignItems: "center", paddingBottom: 2, flexShrink: 1, minWidth: 0 }}>
-              {SECTEURS.map((sec) => (
-                <button
-                  key={sec}
-                  onClick={() => setSecteurFilter(sec)}
-                  style={{
-                    fontSize: 10, padding: "3px 10px", borderRadius: 50,
-                    whiteSpace: "nowrap", cursor: "pointer",
-                    fontWeight: 600, lineHeight: 1.5,
-                    border: `1px solid ${secteurFilter === sec ? "#0C2248" : "#DDEAFF"}`,
-                    background: secteurFilter === sec ? "#0C2248" : "#F0F7FF",
-                    color: secteurFilter === sec ? "#fff" : "#5A7A9A",
-                    transition: "all 150ms",
-                  }}
-                >
-                  {sec}
-                </button>
+          {/* Grille 5 colonnes */}
+          {visibleIndices.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+              {visibleIndices.map((indice) => (
+                <IndiceCard
+                  key={indice.id}
+                  indice={indice}
+                  selected={selectedIndice?.id === indice.id}
+                  loading={loadingId === indice.id}
+                  onClick={() => setSelectedId(indice.id)}
+                />
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div
+              className="bg-white rounded-2xl px-8 py-12 text-center mb-8"
+              style={{ boxShadow: "0 2px 16px rgba(14,52,120,0.08)" }}
+            >
+              <p className="text-[#8A9BB0] text-lg mb-3">Aucun indice pour cette région.</p>
+              <button
+                onClick={() => setRegion("tous")}
+                className="text-[#2E80CE] text-sm font-semibold hover:underline"
+              >
+                Voir tous les indices →
+              </button>
+            </div>
+          )}
 
-        <StockTable
-          stocks={displayedStocks}
-          loading={isLoading}
-          onSelect={setSelectedStock}
-          sortBy={sortBy}
-          sortDir={sortDir}
-          onSort={handleSort}
-        />
-      </section>
+          {/* Titre indice + filtres secteur */}
+          {selectedIndice && (
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 12, minWidth: 0 }}>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <span className="text-2xl select-none leading-none">{selectedIndice.drapeau}</span>
+                <div>
+                  <h2
+                    className="text-xl font-black text-[#0C2248] uppercase leading-tight"
+                    style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+                  >
+                    {selectedIndice.nom}
+                  </h2>
+                  <p className="text-[#8A9BB0] text-xs mt-0.5">{selectedIndice.description}</p>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 5, overflowX: "auto", alignItems: "center", paddingBottom: 2, flexShrink: 1, minWidth: 0 }}>
+                {SECTEURS.map((sec) => (
+                  <button
+                    key={sec}
+                    onClick={() => setSecteurFilter(sec)}
+                    style={{
+                      fontSize: 10, padding: "3px 10px", borderRadius: 50,
+                      whiteSpace: "nowrap", cursor: "pointer",
+                      fontWeight: 600, lineHeight: 1.5,
+                      border: `1px solid ${secteurFilter === sec ? "#0C2248" : "#DDEAFF"}`,
+                      background: secteurFilter === sec ? "#0C2248" : "#F0F7FF",
+                      color: secteurFilter === sec ? "#fff" : "#5A7A9A",
+                      transition: "all 150ms",
+                    }}
+                  >
+                    {sec}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* ── Devises & Matières premières ─────────────────────────────────────── */}
-      <section className="px-4 sm:px-6 pb-6 max-w-6xl mx-auto">
-        <h2 className="text-base font-black text-[#0C2248] uppercase tracking-tight mb-3"
-          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}>
-          Devises &amp; Matières premières
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          {/* Or */}
-          <div className="rounded-2xl border px-5 py-4 flex items-center gap-4"
-            style={{ background: "#FAEEDA", borderColor: "#F59E0B", boxShadow: "0 2px 8px rgba(245,158,11,0.10)" }}>
-            <span className="text-3xl select-none leading-none">🥇</span>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-[#92400E] uppercase tracking-widest">XAU / USD</p>
-              <p className="text-[#0C2248] font-black text-lg tabular-nums leading-tight">
-                {commodities?.gold.prix != null
-                  ? `${commodities.gold.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`
-                  : "—"}
-              </p>
-              <p className="text-xs text-[#92400E] mt-0.5">Once d&apos;or</p>
+          <StockTable
+            stocks={displayedStocks}
+            loading={isLoading}
+            onSelect={setSelectedStock}
+            sortBy={sortBy}
+            sortDir={sortDir}
+            onSort={handleSort}
+          />
+        </section>
+      )}
+
+      {/* ── Onglet Devises & Matières premières ──────────────────────────────── */}
+      {mainTab === "marches" && (
+        <section className="px-4 sm:px-6 pb-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+            {/* Or */}
+            <div className="rounded-2xl border px-5 py-5 flex flex-col gap-3"
+              style={{ background: "#FFFBEB", borderColor: "#FCD34D", boxShadow: "0 2px 10px rgba(252,211,77,0.15)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl select-none leading-none">🥇</span>
+                <VariationBadge v={marches?.or.variation ?? null} size="sm" />
+              </div>
+              <div>
+                <p className="text-[#0C2248] font-black text-xl tabular-nums leading-tight">
+                  {marches?.or.prix != null
+                    ? `${marches.or.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`
+                    : "—"}
+                </p>
+                <p className="text-sm font-bold text-[#0C2248] mt-1">Once d&apos;or</p>
+                <p className="text-xs text-[#92400E] font-mono mt-0.5">GC=F · XAU/USD</p>
+              </div>
             </div>
-            <div>
-              <VariationBadge v={commodities?.gold.variation ?? null} size="sm" />
+
+            {/* EUR/USD */}
+            <div className="rounded-2xl border px-5 py-5 flex flex-col gap-3"
+              style={{ background: "#F0F7FF", borderColor: "#DDEAFF", boxShadow: "0 2px 10px rgba(14,52,120,0.06)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl select-none leading-none">💶</span>
+                <VariationBadge v={marches?.eurusd.variation ?? null} size="sm" />
+              </div>
+              <div>
+                <p className="text-[#0C2248] font-black text-xl tabular-nums leading-tight">
+                  {marches?.eurusd.prix != null
+                    ? marches.eurusd.prix.toFixed(4)
+                    : "—"}
+                </p>
+                <p className="text-sm font-bold text-[#0C2248] mt-1">Euro / Dollar</p>
+                <p className="text-xs text-[#5A7A9A] font-mono mt-0.5">EURUSD=X · EUR/USD</p>
+              </div>
             </div>
+
+            {/* Argent */}
+            <div className="rounded-2xl border px-5 py-5 flex flex-col gap-3"
+              style={{ background: "#F5F5F5", borderColor: "#E5E7EB", boxShadow: "0 2px 10px rgba(0,0,0,0.04)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl select-none leading-none">🥈</span>
+                <VariationBadge v={marches?.argent.variation ?? null} size="sm" />
+              </div>
+              <div>
+                <p className="text-[#0C2248] font-black text-xl tabular-nums leading-tight">
+                  {marches?.argent.prix != null
+                    ? `${marches.argent.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`
+                    : "—"}
+                </p>
+                <p className="text-sm font-bold text-[#0C2248] mt-1">Once d&apos;argent</p>
+                <p className="text-xs text-[#6B7280] font-mono mt-0.5">SI=F · XAG/USD</p>
+              </div>
+            </div>
+
+            {/* Pétrole Brent */}
+            <div className="rounded-2xl border px-5 py-5 flex flex-col gap-3"
+              style={{ background: "#FFF7ED", borderColor: "#FED7AA", boxShadow: "0 2px 10px rgba(254,215,170,0.20)" }}>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl select-none leading-none">🛢️</span>
+                <VariationBadge v={marches?.brent.variation ?? null} size="sm" />
+              </div>
+              <div>
+                <p className="text-[#0C2248] font-black text-xl tabular-nums leading-tight">
+                  {marches?.brent.prix != null
+                    ? `${marches.brent.prix.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $`
+                    : "—"}
+                </p>
+                <p className="text-sm font-bold text-[#0C2248] mt-1">Pétrole Brent</p>
+                <p className="text-xs text-[#C2410C] font-mono mt-0.5">BZ=F · USD/baril</p>
+              </div>
+            </div>
+
           </div>
-          {/* EUR/USD */}
-          <div className="rounded-2xl border px-5 py-4 flex items-center gap-4"
-            style={{ background: "#EEF4FF", borderColor: "#DDEAFF", boxShadow: "0 2px 8px rgba(14,52,120,0.06)" }}>
-            <span className="text-3xl select-none leading-none">💱</span>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-[#2E80CE] uppercase tracking-widest">EUR / USD</p>
-              <p className="text-[#0C2248] font-black text-lg tabular-nums leading-tight">
-                {commodities?.eurusd.prix != null
-                  ? commodities.eurusd.prix.toFixed(4)
-                  : "—"}
-              </p>
-              <p className="text-xs text-[#5A7A9A] mt-0.5">Taux de change</p>
-            </div>
-            <div>
-              <VariationBadge v={commodities?.eurusd.variation ?? null} size="sm" />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── Disclaimer ───────────────────────────────────────────────────────── */}
       <section className="px-4 sm:px-6 pb-16 max-w-6xl mx-auto">
