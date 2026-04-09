@@ -53,7 +53,7 @@ const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> =
   "VIE.PA":  { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
   "ORA.PA":  { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
   "ENGI.PA": { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
-  "DG.PA":   { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
+  "DG.PA":   { label: "BTP",        bg: "#E6F1FB", color: "#0C447C" },
   "PUB.PA":  { label: "Média",      bg: "#FAECE7", color: "#712B13" },
   "SAP.DE":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
   "SIE.DE":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
@@ -103,6 +103,80 @@ const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> =
   "9984.T":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
   "6861.T":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
   "7267.T":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  // CAC 40 manquants
+  "ML.PA":   { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "LR.PA":   { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "SW.PA":   { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
+  "WLN.PA":  { label: "Paiements",  bg: "#E6F1FB", color: "#0C447C" },
+  "TEP.PA":  { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
+  "ERF.PA":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "ATO.PA":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "HO.PA":   { label: "Défense",    bg: "#E6F1FB", color: "#0C447C" },
+  "STLAP.PA":{ label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "MTX.PA":  { label: "Aéro",       bg: "#E6F1FB", color: "#0C447C" },
+  "STM.PA":  { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "EL.PA":   { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "RCO.PA":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "BOL.PA":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "GTT.PA":  { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  // DAX 40 manquants
+  "MRK.DE":  { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "DB1.DE":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "HEN3.DE": { label: "Consomm.",   bg: "#E1F5EE", color: "#085041" },
+  "RWE.DE":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "ADS.DE":  { label: "Mode",       bg: "#EEEDFE", color: "#3C3489" },
+  // FTSE MIB manquants
+  "MB.MI":   { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "LDO.MI":  { label: "Défense",    bg: "#E6F1FB", color: "#0C447C" },
+  "STLA.MI": { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
+  "TIT.MI":  { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
+  // IBEX 35 manquants
+  "TEF.MC":  { label: "Télécom",    bg: "#FAECE7", color: "#712B13" },
+  "REP.MC":  { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  // BEL 20 manquants
+  "SOLB.BR": { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  // AEX manquants
+  "PHIA.AS": { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "ADYEN.AS":{ label: "Paiements",  bg: "#E6F1FB", color: "#0C447C" },
+  // FTSE 100 manquants
+  "BP.L":    { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "RIO.L":   { label: "Mines",      bg: "#FEF3E2", color: "#7C4B00" },
+  "GSK.L":   { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "BHP.L":   { label: "Mines",      bg: "#FEF3E2", color: "#7C4B00" },
+  "DGE.L":   { label: "Boissons",   bg: "#FAEEDA", color: "#633806" },
+  // Nikkei manquants
+  "4063.T":  { label: "Chimie",     bg: "#E1F5EE", color: "#085041" },
+  "6954.T":  { label: "Industrie",  bg: "#E6F1FB", color: "#0C447C" },
+  "9983.T":  { label: "Mode",       bg: "#EEEDFE", color: "#3C3489" },
+  "8306.T":  { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  // S&P 500 manquants
+  "XOM":     { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "V":       { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "MA":      { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "PG":      { label: "Consomm.",   bg: "#E1F5EE", color: "#085041" },
+  "HD":      { label: "Distrib.",   bg: "#E1F5EE", color: "#085041" },
+  "MRK":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "ABBV":    { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "CVX":     { label: "Énergie",    bg: "#FAEEDA", color: "#633806" },
+  "CRM":     { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "BAC":     { label: "Finance",    bg: "#EEEDFE", color: "#3C3489" },
+  "KO":      { label: "Boissons",   bg: "#FAEEDA", color: "#633806" },
+  "PEP":     { label: "Alim.",      bg: "#E1F5EE", color: "#085041" },
+  "TMO":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "ORCL":    { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "ACN":     { label: "Services",   bg: "#E6F1FB", color: "#0C447C" },
+  "MCD":     { label: "Restau.",    bg: "#FAEEDA", color: "#633806" },
+  "CSCO":    { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "ABT":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "WMT":     { label: "Distrib.",   bg: "#E1F5EE", color: "#085041" },
+  "NKE":     { label: "Mode",       bg: "#EEEDFE", color: "#3C3489" },
+  "ADBE":    { label: "Tech",       bg: "#E6F1FB", color: "#0C447C" },
+  "TXN":     { label: "Semi",       bg: "#E6F1FB", color: "#0C447C" },
+  "UNH":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "DHR":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "BMY":     { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "AMGN":    { label: "Santé",      bg: "#E1F5EE", color: "#085041" },
+  "PM":      { label: "Tabac",      bg: "#E8E4DF", color: "#4A3B2A" },
 };
 
 // ─── LOGO_MAP ticker → domaine Logo.dev ──────────────────────────────────────
@@ -202,6 +276,36 @@ function SectorBadge({ ticker, secteur }: { ticker: string; secteur: string }) {
   return (
     <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-gray-100 text-gray-500">
       Autre
+    </span>
+  );
+}
+
+// ─── LogoFallback ─────────────────────────────────────────────────────────────
+
+function LogoFallback({ ticker, size = 28 }: { ticker: string; secteur?: string; size?: number }) {
+  const entry = SECTOR_MAP[ticker];
+  const bg    = entry?.bg    ?? "#E6F1FB";
+  const color = entry?.color ?? "#0C447C";
+  const abbr  = ticker.replace(/\.[A-Z]+$/, "").slice(0, 3).toUpperCase();
+  return (
+    <span
+      style={{
+        width: size, height: size,
+        borderRadius: Math.round(size * 0.29),
+        background: bg,
+        color,
+        fontSize: Math.round(size * 0.32),
+        fontWeight: 700,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        border: "0.5px solid #E5E7EB",
+        userSelect: "none",
+        letterSpacing: "-0.03em",
+      }}
+    >
+      {abbr}
     </span>
   );
 }
@@ -363,14 +467,23 @@ function StockTableRow({
         <span />
         <span className="text-[#C5D0DC] text-xs font-mono font-bold tabular-nums">#{s.rang}</span>
         <div className="min-w-0 flex items-center gap-2">
-          {LOGO_MAP[s.ticker] && (
+          {LOGO_MAP[s.ticker] ? (
             <img
-              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=32`}
-              width={20} height={20}
-              style={{ borderRadius: "5px", objectFit: "contain", flexShrink: 0 }}
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=56`}
+              width={28} height={28}
+              style={{
+                borderRadius: "8px",
+                objectFit: "contain",
+                flexShrink: 0,
+                background: "#fff",
+                padding: "2px",
+                border: "0.5px solid #E5E7EB",
+              }}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               alt=""
             />
+          ) : (
+            <LogoFallback ticker={s.ticker} secteur={s.secteur} size={28} />
           )}
           <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
         </div>
@@ -406,14 +519,23 @@ function StockTableRow({
         style={{ gridTemplateColumns: "1fr 6rem 5.5rem 3rem" }}
       >
         <div className="min-w-0 pr-2 flex items-center gap-2">
-          {LOGO_MAP[s.ticker] && (
+          {LOGO_MAP[s.ticker] ? (
             <img
-              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=32`}
-              width={20} height={20}
-              style={{ borderRadius: "5px", objectFit: "contain", flexShrink: 0 }}
-              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=56`}
+              width={28} height={28}
+              style={{
+                borderRadius: "8px",
+                objectFit: "contain",
+                flexShrink: 0,
+                background: "#fff",
+                padding: "2px",
+                border: "0.5px solid #E5E7EB",
+              }}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               alt=""
             />
+          ) : (
+            <LogoFallback ticker={s.ticker} secteur={s.secteur} size={28} />
           )}
           <div className="min-w-0">
             <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>

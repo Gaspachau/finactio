@@ -22,7 +22,6 @@ function countryFromTicker(ticker: string): { pays: string; drapeau: string } {
   return                             { pays: "États-Unis",   drapeau: "🇺🇸" };
 }
 
-// Pseudo-random déterministe (LCG) — résultat stable pour un ticker donné
 function tickerSeed(ticker: string): number {
   return ticker.split("").reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 7) >>> 0;
 }
@@ -58,12 +57,10 @@ export default function ActionPanel({
 }) {
   const open = stock !== null;
 
-  // Garde le dernier stock connu pour l'animation de fermeture
   const lastRef = useRef<StockRow | null>(null);
   if (stock !== null) lastRef.current = stock;
   const s = stock ?? lastRef.current;
 
-  // Fermeture au clavier
   useEffect(() => {
     if (!open) return;
     const fn = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -71,7 +68,6 @@ export default function ActionPanel({
     return () => window.removeEventListener("keydown", fn);
   }, [open, onClose]);
 
-  // Bloque le scroll du body
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -95,70 +91,124 @@ export default function ActionPanel({
 
   return (
     <>
-      {/* ── Overlay ──────────────────────────────────────────────────────────── */}
+      {/* ── Overlay ────────────────────────────────────────────────────────── */}
       <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-        style={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }}
         onClick={onClose}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 40,
+          background: "rgba(0,0,0,0.5)",
+          opacity: open ? 1 : 0,
+          pointerEvents: open ? "auto" : "none",
+          transition: "opacity 300ms",
+        }}
       />
 
-      {/* ── Panneau latéral ──────────────────────────────────────────────────── */}
+      {/* ── Panneau latéral ──────────────────────────────────────────────── */}
       <div
-        className="fixed top-0 right-0 bottom-0 z-50 w-full sm:w-[420px] bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-out"
-        style={{ transform: open ? "translateX(0)" : "translateX(100%)" }}
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 50,
+          width: "100%",
+          maxWidth: 420,
+          background: "#fff",
+          boxShadow: "-4px 0 40px rgba(0,0,0,0.18)",
+          display: "flex",
+          flexDirection: "column",
+          transform: open ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 300ms cubic-bezier(0.4,0,0.2,1)",
+        }}
       >
         {/* Header sombre */}
-        <div className="bg-[#0C2248] px-6 pt-8 pb-6 flex-shrink-0">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3 min-w-0">
-              <span className="text-3xl select-none shrink-0">{drapeau}</span>
+        <div
+          style={{
+            background: "#0C2248",
+            padding: "32px 24px 24px",
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+              <span style={{ fontSize: 30, lineHeight: 1, flexShrink: 0 }}>{drapeau}</span>
               {LOGO_MAP[s.ticker] && (
                 <img
                   src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_JcnamDAGQfCv-29I4SMuNg&size=64`}
                   width={44} height={44}
-                  style={{ borderRadius: "10px", objectFit: "contain", flexShrink: 0, background: "#fff" }}
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  style={{
+                    borderRadius: 10,
+                    objectFit: "contain",
+                    flexShrink: 0,
+                    background: "#fff",
+                    padding: 2,
+                    border: "0.5px solid rgba(255,255,255,0.15)",
+                  }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   alt=""
                 />
               )}
-              <div className="min-w-0">
-                <p className="text-white/40 text-xs font-mono mb-0.5">{s.ticker}</p>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, fontFamily: "monospace", marginBottom: 2 }}>
+                  {s.ticker}
+                </p>
                 <h2
-                  className="text-white font-black text-xl uppercase leading-tight truncate"
-                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+                  style={{
+                    color: "#fff",
+                    fontWeight: 900,
+                    fontSize: 20,
+                    textTransform: "uppercase",
+                    lineHeight: 1.2,
+                    fontFamily: "'Cabinet Grotesk', sans-serif",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   {s.nom}
                 </h2>
-                <p className="text-white/40 text-xs mt-0.5">{pays}</p>
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, marginTop: 2 }}>{pays}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-white/40 hover:text-white transition-colors ml-4 mt-1 shrink-0"
               aria-label="Fermer"
+              style={{
+                color: "rgba(255,255,255,0.4)",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                marginLeft: 16,
+                marginTop: 4,
+                flexShrink: 0,
+                padding: 0,
+                lineHeight: 1,
+              }}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width={24} height={24} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {/* Prix + variation */}
-          <div className="flex items-baseline gap-3 flex-wrap">
-            <span className="text-3xl sm:text-4xl font-black text-white tabular-nums">
+          <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 36, fontWeight: 900, color: "#fff", fontVariantNumeric: "tabular-nums" }}>
               {prixDisplay} {s.prixDevise ?? s.currency}
             </span>
-            <span className={`text-base font-bold tabular-nums ${pos ? "text-[#22C55E]" : "text-[#EF4444]"}`}>
+            <span style={{ fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: lineColor }}>
               {pos ? "▲" : "▼"} {Math.abs(s.variation ?? 0).toFixed(2)}%
             </span>
           </div>
         </div>
 
         {/* Corps scrollable */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+        <div style={{ flex: 1, overflowY: "auto", padding: "24px", display: "flex", flexDirection: "column", gap: 20 }}>
 
           {/* 4 métriques */}
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {[
               {
                 label: "Capitalisation",
@@ -175,19 +225,23 @@ export default function ActionPanel({
               },
               { label: "Pays",         value: `${drapeau} ${pays}` },
             ].map(({ label, value }) => (
-              <div key={label} className="bg-[#F4F7FC] rounded-xl px-4 py-3">
-                <p className="text-[#8A9BB0] text-xs font-semibold uppercase tracking-wider mb-1">{label}</p>
-                <p className="text-[#0C2248] text-sm font-bold truncate">{value}</p>
+              <div key={label} style={{ background: "#F4F7FC", borderRadius: 12, padding: "12px 16px" }}>
+                <p style={{ color: "#8A9BB0", fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
+                  {label}
+                </p>
+                <p style={{ color: "#0C2248", fontSize: 13, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {value}
+                </p>
               </div>
             ))}
           </div>
 
           {/* Mini sparkline */}
           <div>
-            <p className="text-[#8A9BB0] text-xs font-semibold uppercase tracking-wider mb-2">
+            <p style={{ color: "#8A9BB0", fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
               Cours · 30 derniers jours
             </p>
-            <div className="bg-[#F4F7FC] rounded-xl overflow-hidden">
+            <div style={{ background: "#F4F7FC", borderRadius: 12, overflow: "hidden" }}>
               <ResponsiveContainer width="100%" height={100}>
                 <AreaChart data={sparkData} margin={{ top: 8, right: 4, left: 0, bottom: 0 }}>
                   <defs>
@@ -201,7 +255,7 @@ export default function ActionPanel({
                       if (!active || !payload?.length) return null;
                       const v = payload[0].value as number;
                       return (
-                        <div className="bg-white rounded-lg px-2 py-1 shadow-md text-xs font-bold text-[#0C2248]">
+                        <div style={{ background: "#fff", borderRadius: 8, padding: "4px 8px", boxShadow: "0 2px 8px rgba(0,0,0,0.12)", fontSize: 11, fontWeight: 700, color: "#0C2248" }}>
                           {v.toLocaleString("fr-FR", {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
@@ -223,21 +277,42 @@ export default function ActionPanel({
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-[#C5D0DC] text-xs mt-1.5 text-center">
+            <p style={{ color: "#C5D0DC", fontSize: 11, marginTop: 6, textAlign: "center" }}>
               Données simulées · à titre illustratif uniquement
             </p>
           </div>
         </div>
 
         {/* Footer CTA */}
-        <div className="px-6 py-4 border-t border-[#F0F7FF] bg-white flex-shrink-0">
+        <div
+          style={{
+            padding: "16px 24px",
+            borderTop: "1px solid #F0F7FF",
+            background: "#fff",
+            flexShrink: 0,
+          }}
+        >
           <Link
             href={`/marches/${encodeURIComponent(s.ticker)}`}
             onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 bg-[#0C2248] hover:bg-[#1E3A5F] text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              background: "#0C2248",
+              color: "#fff",
+              fontWeight: 600,
+              padding: "12px 0",
+              borderRadius: 12,
+              textDecoration: "none",
+              fontSize: 14,
+              transition: "background 150ms",
+            }}
           >
             Voir la fiche complète
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg width={16} height={16} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
