@@ -31,7 +31,7 @@ export interface IndiceData {
 
 // ─── SECTOR_MAP ticker → badge ────────────────────────────────────────────────
 
-const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> = {
+export const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> = {
   "MC.PA":   { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
   "OR.PA":   { label: "Consomm.",   bg: "#E1F5EE", color: "#085041" },
   "RMS.PA":  { label: "Luxe",       bg: "#EEEDFE", color: "#3C3489" },
