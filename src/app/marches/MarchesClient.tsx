@@ -105,6 +105,53 @@ const SECTOR_MAP: Record<string, { label: string; bg: string; color: string }> =
   "7267.T":  { label: "Auto",       bg: "#FAEEDA", color: "#633806" },
 };
 
+// ─── LOGO_MAP ticker → domaine Logo.dev ──────────────────────────────────────
+
+export const LOGO_MAP: Record<string, string> = {
+  "MC.PA":   "lvmh.com",           "OR.PA":   "loreal.com",          "RMS.PA":  "hermes.com",
+  "TTE.PA":  "totalenergies.com",  "SU.PA":   "se.com",              "AIR.PA":  "airbus.com",
+  "SAF.PA":  "safran-group.com",   "AI.PA":   "airliquide.com",      "BNP.PA":  "bnpparibas.com",
+  "SAN.PA":  "sanofi.com",         "CS.PA":   "axaim.com",           "SG.PA":   "societegenerale.com",
+  "ACA.PA":  "credit-agricole.com","BN.PA":   "danone.com",          "KER.PA":  "kering.com",
+  "RI.PA":   "pernod-ricard.com",  "DSY.PA":  "dassault-systemes.com","CAP.PA": "capgemini.com",
+  "ORA.PA":  "orange.com",         "ENGI.PA": "engie.com",           "ML.PA":   "michelin.com",
+  "DG.PA":   "vinci.com",          "PUB.PA":  "publicis.com",        "LR.PA":   "legrand.com",
+  "SW.PA":   "sodexo.com",         "TEP.PA":  "teleperformance.com", "ERF.PA":  "eurofins.com",
+  "WLN.PA":  "worldline.com",      "ATO.PA":  "atos.net",            "HO.PA":   "thalesgroup.com",
+  "SAP.DE":  "sap.com",            "SIE.DE":  "siemens.com",         "ALV.DE":  "allianz.com",
+  "DTE.DE":  "telekom.com",        "MBG.DE":  "mercedes-benz.com",   "BMW.DE":  "bmw.com",
+  "BAS.DE":  "basf.com",           "VOW3.DE": "volkswagen.com",      "IFX.DE":  "infineon.com",
+  "BAYN.DE": "bayer.com",          "MRK.DE":  "merckgroup.com",      "DB1.DE":  "deutsche-boerse.com",
+  "HEN3.DE": "henkel.com",         "RWE.DE":  "rwe.com",             "ADS.DE":  "adidas.com",
+  "AAPL":    "apple.com",          "MSFT":    "microsoft.com",       "NVDA":    "nvidia.com",
+  "AMZN":    "amazon.com",         "GOOGL":   "google.com",          "META":    "meta.com",
+  "BRK-B":   "berkshirehathaway.com","LLY":   "lilly.com",           "TSLA":    "tesla.com",
+  "AVGO":    "broadcom.com",       "JPM":     "jpmorganchase.com",   "UNH":     "unitedhealthgroup.com",
+  "XOM":     "exxonmobil.com",     "V":       "visa.com",            "MA":      "mastercard.com",
+  "PG":      "pg.com",             "HD":      "homedepot.com",       "COST":    "costco.com",
+  "MRK":     "merck.com",          "ABBV":    "abbvie.com",          "CVX":     "chevron.com",
+  "CRM":     "salesforce.com",     "BAC":     "bankofamerica.com",   "NFLX":    "netflix.com",
+  "KO":      "coca-cola.com",      "PEP":     "pepsico.com",         "TMO":     "thermofisher.com",
+  "ORCL":    "oracle.com",         "ACN":     "accenture.com",       "MCD":     "mcdonalds.com",
+  "CSCO":    "cisco.com",          "ABT":     "abbott.com",          "WMT":     "walmart.com",
+  "NKE":     "nike.com",           "ADBE":    "adobe.com",           "TXN":     "ti.com",
+  "ENEL.MI": "enel.com",           "UCG.MI":  "unicredit.eu",        "ISP.MI":  "intesasanpaolo.com",
+  "RACE.MI": "ferrari.com",        "ENI.MI":  "eni.com",             "STM.MI":  "st.com",
+  "LDO.MI":  "leonardocompany.com","STLA.MI": "stellantis.com",
+  "ITX.MC":  "inditex.com",        "SAN.MC":  "santander.com",       "BBVA.MC": "bbva.com",
+  "IBE.MC":  "iberdrola.com",      "TEF.MC":  "telefonica.com",      "REP.MC":  "repsol.com",
+  "ABI.BR":  "ab-inbev.com",       "UCB.BR":  "ucb.com",             "KBC.BR":  "kbc.com",
+  "ASML.AS": "asml.com",           "INGA.AS": "ing.com",             "HEIA.AS": "heineken.com",
+  "PHIA.AS": "philips.com",        "ADYEN.AS":"adyen.com",
+  "SHEL.L":  "shell.com",          "AZN.L":   "astrazeneca.com",     "HSBA.L":  "hsbc.com",
+  "ULVR.L":  "unilever.com",       "BP.L":    "bp.com",              "RIO.L":   "riotinto.com",
+  "GSK.L":   "gsk.com",            "BHP.L":   "bhp.com",             "DGE.L":   "diageo.com",
+  "RR.L":    "rolls-royce.com",
+  "7203.T":  "toyota.com",         "6758.T":  "sony.com",            "9984.T":  "softbank.jp",
+  "6861.T":  "keyence.com",        "7267.T":  "honda.com",           "4063.T":  "shinetsu.co.jp",
+  "6954.T":  "fanuc.co.jp",        "9983.T":  "fastretailing.com",   "8306.T":  "mufg.jp",
+};
+
 // ─── Fallback secteur (Tailwind classes) ──────────────────────────────────────
 
 const SECTEUR_COLORS: Record<string, string> = {
@@ -315,7 +362,16 @@ function StockTableRow({
       >
         <span />
         <span className="text-[#C5D0DC] text-xs font-mono font-bold tabular-nums">#{s.rang}</span>
-        <div className="min-w-0">
+        <div className="min-w-0 flex items-center gap-2">
+          {LOGO_MAP[s.ticker] && (
+            <img
+              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_X-1ZO13GSgeOoUrIuJ1B6A&size=32`}
+              width={20} height={20}
+              style={{ borderRadius: "5px", objectFit: "contain", flexShrink: 0 }}
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              alt=""
+            />
+          )}
           <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
         </div>
         <span className="text-[#8A9BB0] text-xs font-mono truncate">{s.ticker}</span>
@@ -349,11 +405,22 @@ function StockTableRow({
         className="sm:hidden grid items-center pl-4 pr-5 py-3.5"
         style={{ gridTemplateColumns: "1fr 6rem 5.5rem 3rem" }}
       >
-        <div className="min-w-0 pr-2">
-          <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
-          <span className="text-[#8A9BB0] text-xs">
-            {s.capMds > 0 ? `${s.capMds.toLocaleString("fr-FR")} Mds${s.currency}` : "—"}
-          </span>
+        <div className="min-w-0 pr-2 flex items-center gap-2">
+          {LOGO_MAP[s.ticker] && (
+            <img
+              src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_X-1ZO13GSgeOoUrIuJ1B6A&size=32`}
+              width={20} height={20}
+              style={{ borderRadius: "5px", objectFit: "contain", flexShrink: 0 }}
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              alt=""
+            />
+          )}
+          <div className="min-w-0">
+            <span className="text-[#0C2248] font-bold text-sm block truncate">{s.nom}</span>
+            <span className="text-[#8A9BB0] text-xs">
+              {s.capMds > 0 ? `${s.capMds.toLocaleString("fr-FR")} Mds${s.currency}` : "—"}
+            </span>
+          </div>
         </div>
         <span className="text-[#1E3A5F] text-sm font-bold tabular-nums text-right pr-3">
           {s.prix != null

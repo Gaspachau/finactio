@@ -6,6 +6,7 @@ import {
   AreaChart, Area, ResponsiveContainer, Tooltip,
 } from "recharts";
 import type { StockRow } from "./MarchesClient";
+import { LOGO_MAP } from "./MarchesClient";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -111,6 +112,15 @@ export default function ActionPanel({
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3 min-w-0">
               <span className="text-3xl select-none shrink-0">{drapeau}</span>
+              {LOGO_MAP[s.ticker] && (
+                <img
+                  src={`https://img.logo.dev/${LOGO_MAP[s.ticker]}?token=pk_X-1ZO13GSgeOoUrIuJ1B6A&size=64`}
+                  width={44} height={44}
+                  style={{ borderRadius: "10px", objectFit: "contain", flexShrink: 0, background: "#fff" }}
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  alt=""
+                />
+              )}
               <div className="min-w-0">
                 <p className="text-white/40 text-xs font-mono mb-0.5">{s.ticker}</p>
                 <h2
