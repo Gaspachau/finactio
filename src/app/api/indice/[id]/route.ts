@@ -76,10 +76,10 @@ const SECTOR_FR: Record<string, string> = {
 
 // ─── Lookup statique (noms & secteurs FR) ─────────────────────────────────────
 
-const staticMeta = new Map<string, Pick<StockRow, "nom" | "secteur" | "slug">>();
+const staticMeta = new Map<string, StockRow>();
 for (const indice of STATIC_INDICES) {
   for (const stock of indice.stocks) {
-    staticMeta.set(stock.ticker, { nom: stock.nom, secteur: stock.secteur, slug: stock.slug });
+    staticMeta.set(stock.ticker, stock);
   }
 }
 
@@ -116,6 +116,7 @@ export async function GET(
 
     const quotesArray = Array.isArray(rawQuotes) ? rawQuotes : [rawQuotes];
     const rows: StockRow[] = [];
+    const returnedTickers = new Set(quotesArray.map((q) => q.symbol as string).filter(Boolean));
 
     for (const q of quotesArray) {
       const ticker = q.symbol as string | undefined;
@@ -176,6 +177,16 @@ export async function GET(
       const slug    = base?.slug    ?? ticker.toLowerCase().replace(/\./g, "-").replace(/[^a-z0-9-]/g, "-");
 
       rows.push({ rang: 0, nom, ticker, secteur, capMds, variation, currency, slug, prix, prixDevise });
+    }
+
+    // ── Fallback pour les tickers silencieusement ignorés par Yahoo Finance ──────
+    for (const ticker of symbols) {
+      if (returnedTickers.has(ticker)) continue;
+      const base = staticMeta.get(ticker);
+      if (!base || base.capMds <= 0) continue;
+      const currency = isCHF(ticker) ? "CHF" : isEuro(ticker) ? "€" : ticker.endsWith(".L") ? "$" : ticker.endsWith(".T") ? "$" : "$";
+      const prixDevise = isCHF(ticker) ? "CHF" : isEuro(ticker) ? "€" : ticker.endsWith(".L") ? "£" : ticker.endsWith(".T") ? "¥" : "$";
+      rows.push({ rang: 0, nom: base.nom, ticker, secteur: base.secteur, capMds: base.capMds, variation: base.variation, currency, slug: base.slug, prix: base.prix ?? null, prixDevise });
     }
 
     const stocks = rows

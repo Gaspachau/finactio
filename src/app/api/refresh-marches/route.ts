@@ -183,8 +183,8 @@ export async function GET(req: NextRequest) {
     const rawPrice = q["regularMarketPrice"] as number | undefined;
     const rawPct   = q["regularMarketChangePercent"] as number | undefined;
     return {
-      prix:      rawPrice != null ? Math.round(rawPrice * 100) / 100 : null,
-      variation: rawPct   != null ? Math.round(rawPct   * 100) / 100 : null,
+      prix:      rawPrice != null ? rawPrice : null, // full precision — display formats it
+      variation: rawPct   != null ? Math.round(rawPct * 100) / 100 : null,
     };
   }
 
