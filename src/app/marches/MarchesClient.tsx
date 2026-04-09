@@ -704,14 +704,27 @@ function StockTableRow({
 
 // ─── StockTable ───────────────────────────────────────────────────────────────
 
+type SortCol = "capi" | "prix" | "variation";
+
+function SortArrow({ col, sortBy, sortDir }: { col: SortCol; sortBy: SortCol; sortDir: "asc" | "desc" }) {
+  if (sortBy !== col) return <span style={{ opacity: 0.35 }}>↕</span>;
+  return <span style={{ color: "#2E80CE" }}>{sortDir === "asc" ? "↑" : "↓"}</span>;
+}
+
 function StockTable({
   stocks,
   loading,
   onSelect,
+  sortBy,
+  sortDir,
+  onSort,
 }: {
   stocks: StockRow[];
   loading: boolean;
   onSelect: (stock: StockRow) => void;
+  sortBy: SortCol;
+  sortDir: "asc" | "desc";
+  onSort: (col: SortCol) => void;
 }) {
   if (!loading && stocks.length === 0) {
     return (
@@ -722,6 +735,14 @@ function StockTable({
     );
   }
 
+  const colStyle = (col: SortCol): React.CSSProperties => ({
+    cursor: "pointer",
+    userSelect: "none",
+    color: sortBy === col ? "#2E80CE" : "#8A9BB0",
+    display: "inline-flex", alignItems: "center", gap: 3,
+    transition: "color 150ms",
+  });
+
   return (
     <div className="bg-white rounded-2xl overflow-hidden"
       style={{ boxShadow: "0 2px 16px rgba(14,52,120,0.08)" }}>
@@ -730,9 +751,21 @@ function StockTable({
         className="hidden sm:grid gap-x-4 px-7 py-2.5 bg-[#F8FAFD]"
         style={{ gridTemplateColumns: "4px 2.5rem 1fr 5rem 6rem 9.5rem 7.5rem 6rem 3.5rem" }}
       >
-        {["", "#", "Entreprise", "Ticker", "Prix", "Secteur", "Cap. (Mds)", "Variation", ""].map((h, i) => (
-          <span key={i} className="text-[#8A9BB0] text-xs uppercase tracking-widest font-semibold">{h}</span>
-        ))}
+        <span />
+        <span className="text-[#8A9BB0] text-xs uppercase tracking-widest font-semibold">#</span>
+        <span className="text-[#8A9BB0] text-xs uppercase tracking-widest font-semibold">Entreprise</span>
+        <span className="text-[#8A9BB0] text-xs uppercase tracking-widest font-semibold">Ticker</span>
+        <button className="text-xs uppercase tracking-widest font-semibold" style={colStyle("prix")} onClick={() => onSort("prix")}>
+          Prix <SortArrow col="prix" sortBy={sortBy} sortDir={sortDir} />
+        </button>
+        <span className="text-[#8A9BB0] text-xs uppercase tracking-widest font-semibold">Secteur</span>
+        <button className="text-xs uppercase tracking-widest font-semibold" style={colStyle("capi")} onClick={() => onSort("capi")}>
+          Cap. (Mds) <SortArrow col="capi" sortBy={sortBy} sortDir={sortDir} />
+        </button>
+        <button className="text-xs uppercase tracking-widest font-semibold" style={colStyle("variation")} onClick={() => onSort("variation")}>
+          Variation <SortArrow col="variation" sortBy={sortBy} sortDir={sortDir} />
+        </button>
+        <span />
       </div>
 
       {stocks.map((s, i) => (
@@ -746,7 +779,7 @@ function StockTable({
       {!loading && stocks.length > 0 && (
         <div className="px-7 py-2.5 bg-[#F8FAFD] border-t border-[#F0F7FF]">
           <p className="text-[#8A9BB0] text-xs">
-            {stocks.length} valeur{stocks.length > 1 ? "s" : ""} · triées par capitalisation · Yahoo Finance
+            {stocks.length} valeur{stocks.length > 1 ? "s" : ""} · triées par {sortBy === "capi" ? "capitalisation" : sortBy === "prix" ? "prix" : "variation"} · Yahoo Finance
           </p>
         </div>
       )}
@@ -771,7 +804,18 @@ export default function MarchesClient({
   const [loadingId,     setLoadingId]     = useState<string | null>(null);
   const [selectedStock, setSelectedStock] = useState<StockRow | null>(null);
   const [secteurFilter, setSecteurFilter] = useState<string>("Tous");
+  const [sortBy,  setSortBy]  = useState<"capi" | "prix" | "variation">("capi");
+  const [sortDir, setSortDir] = useState<"desc" | "asc">("desc");
   const fetchedRef = useRef(new Set<string>());
+
+  function handleSort(col: "capi" | "prix" | "variation") {
+    if (sortBy === col) {
+      setSortDir((d) => (d === "desc" ? "asc" : "desc"));
+    } else {
+      setSortBy(col);
+      setSortDir("desc");
+    }
+  }
 
   useEffect(() => {
     if (!selectedId || fetchedRef.current.has(selectedId)) return;
@@ -800,9 +844,17 @@ export default function MarchesClient({
     ? (liveData[selectedIndice.id] ?? selectedIndice.stocks)
     : [];
 
-  const displayedStocks = secteurFilter === "Tous"
+  const filteredStocks = secteurFilter === "Tous"
     ? baseStocks
     : baseStocks.filter((s) => SECTOR_MAP[s.ticker]?.label === secteurFilter);
+
+  const dir = sortDir === "desc" ? 1 : -1;
+  const displayedStocks = [...filteredStocks].sort((a, b) => {
+    if (sortBy === "capi")      return (b.capMds - a.capMds) * dir;
+    if (sortBy === "prix")      return ((b.prix ?? 0) - (a.prix ?? 0)) * dir;
+    if (sortBy === "variation") return ((b.variation ?? 0) - (a.variation ?? 0)) * dir;
+    return 0;
+  });
 
   const isLoading = loadingId === selectedIndice?.id;
 
@@ -845,21 +897,6 @@ export default function MarchesClient({
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {SECTEURS.map((s) => (
-              <button
-                key={s}
-                onClick={() => setSecteurFilter(s)}
-                className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-150 ${
-                  secteurFilter === s
-                    ? "bg-[#2E80CE] text-white border border-transparent"
-                    : "bg-transparent border border-white/25 text-white/50 hover:bg-white/10 hover:text-white/80"
-                }`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -894,16 +931,39 @@ export default function MarchesClient({
         )}
 
         {selectedIndice && (
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl select-none leading-none">{selectedIndice.drapeau}</span>
-            <div>
-              <h2
-                className="text-xl font-black text-[#0C2248] uppercase leading-tight"
-                style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-              >
-                {selectedIndice.nom}
-              </h2>
-              <p className="text-[#8A9BB0] text-xs mt-0.5">{selectedIndice.description}</p>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 12, minWidth: 0 }}>
+            {/* Titre indice */}
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <span className="text-2xl select-none leading-none">{selectedIndice.drapeau}</span>
+              <div>
+                <h2
+                  className="text-xl font-black text-[#0C2248] uppercase leading-tight"
+                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+                >
+                  {selectedIndice.nom}
+                </h2>
+                <p className="text-[#8A9BB0] text-xs mt-0.5">{selectedIndice.description}</p>
+              </div>
+            </div>
+            {/* Pills secteur scrollables */}
+            <div style={{ display: "flex", gap: 5, overflowX: "auto", alignItems: "center", paddingBottom: 2, flexShrink: 1, minWidth: 0 }}>
+              {SECTEURS.map((sec) => (
+                <button
+                  key={sec}
+                  onClick={() => setSecteurFilter(sec)}
+                  style={{
+                    fontSize: 10, padding: "3px 10px", borderRadius: 50,
+                    whiteSpace: "nowrap", cursor: "pointer",
+                    fontWeight: 600, lineHeight: 1.5,
+                    border: `1px solid ${secteurFilter === sec ? "#0C2248" : "#DDEAFF"}`,
+                    background: secteurFilter === sec ? "#0C2248" : "#F0F7FF",
+                    color: secteurFilter === sec ? "#fff" : "#5A7A9A",
+                    transition: "all 150ms",
+                  }}
+                >
+                  {sec}
+                </button>
+              ))}
             </div>
           </div>
         )}
@@ -912,6 +972,9 @@ export default function MarchesClient({
           stocks={displayedStocks}
           loading={isLoading}
           onSelect={setSelectedStock}
+          sortBy={sortBy}
+          sortDir={sortDir}
+          onSort={handleSort}
         />
       </section>
 
